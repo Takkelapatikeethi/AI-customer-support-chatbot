@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "check:db": "node scripts/check-db.js",
+    "test:history": "node scripts/test-chat-history.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +16,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "mysql2": "^3.24.6",
     "openai": "^6.45.0"
   }
 }

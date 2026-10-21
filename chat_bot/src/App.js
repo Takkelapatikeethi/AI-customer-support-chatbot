@@ -1,5 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const storedMessages = (rows) => rows.map((row) => ({
+  text: row.content, sender: row.role === "user" ? "user" : "bot",
+  time: new Date(row.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  fileName: row.file_name,
+}));
+function browserToken() {
+  try {
+    let token = localStorage.getItem("chatbot-browser-token");
+    if (!token || !/^[a-f0-9]{64}$/.test(token)) {
+      token = Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) => n.toString(16).padStart(2, "0")).join("");
+      localStorage.setItem("chatbot-browser-token", token);
+    }
+    return token;
+  } catch { return null; }
+}
+async function chatRequest(path, token, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options, headers: { "Content-Type": "application/json", "X-Chat-Token": token, ...options.headers },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.reply || "Could not load chat history.");
+  return data;
+}
+function rememberSession(id) {
+  try {
+    if (id) localStorage.setItem("chatbot-active-session", id);
+    else localStorage.removeItem("chatbot-active-session");
+  } catch { /* The current conversation can still be used without remembering it. */ }
+}
+
 const getTime = () => {
   return new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -19,9 +50,51 @@ function App() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [activeTab, setActiveTab] = useState("chat");
+  const [token] = useState(browserToken);
+  const [sessions, setSessions] = useState([]);
+  const [sessionId, setSessionId] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        if (!token) throw new Error("Enable browser storage to save and reopen chats.");
+        const data = await chatRequest("/api/chats", token);
+        if (cancelled) return;
+        setSessions(data.sessions);
+        const previous = localStorage.getItem("chatbot-active-session");
+        if (previous && data.sessions.some((s) => String(s.session_id) === previous)) {
+          const chat = await chatRequest(`/api/chats/${previous}/messages`, token);
+          if (cancelled) return;
+          setSessionId(previous);
+          setMessages(storedMessages(chat.messages));
+        }
+      } catch (err) { if (!cancelled) setError(err.message); }
+      finally { if (!cancelled) setHistoryLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [token]);
+
+  const openChat = async (id) => {
+    if (isTyping || historyLoading) return;
+    setHistoryLoading(true);
+    setError("");
+    try {
+      const chat = await chatRequest(`/api/chats/${id}/messages`, token);
+      setSessionId(String(id));
+      rememberSession(String(id));
+      setMessages(storedMessages(chat.messages));
+      setMessage("");
+      setUploadedFile(null);
+      setActiveTab("chat");
+    } catch (err) { setError(err.message); }
+    finally { setHistoryLoading(false); }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,7 +102,10 @@ function App() {
 
   const handleSend = async () => {
     const userText = message.trim();
-    if ((userText === "" && !uploadedFile) || isTyping) return;
+    if ((userText === "" && !uploadedFile) || isTyping || historyLoading || !token) return;
+
+    setError("");
+    const previousMessages = messages;
 
     setMessage("");
     setIsTyping(true);
@@ -47,12 +123,14 @@ function App() {
     ]);
 
     try {
-      const response = await fetch("http://localhost:5000/message", {
+      const response = await fetch(`${API_BASE}/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Chat-Token": token,
         },
         body: JSON.stringify({
+          sessionId,
           text: userText || "Please review this uploaded file.",
           fileContext: fileToSend
             ? {
@@ -64,30 +142,39 @@ function App() {
       });
 
       const data = await response.json();
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: data.reply,
-          sender: "bot",
-          time: getTime(),
-        },
-      ]);
+      if (data.sessionId) {
+        const id = String(data.sessionId);
+        setSessionId(id);
+        rememberSession(id);
+        const chat = await chatRequest(`/api/chats/${id}/messages`, token);
+        setMessages(storedMessages(chat.messages));
+      }
+      if (!response.ok) {
+        if (!data.saved) {
+          setMessages(previousMessages);
+          setMessage(userText);
+          setUploadedFile(fileToSend);
+        }
+        setError(data.reply || "Could not send your message.");
+      }
     } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: "Server error. Please try again.",
-          sender: "bot",
-          time: getTime(),
-        },
-      ]);
+      setError("Could not confirm your message was saved. Check chat history before retrying.");
     } finally {
+      try {
+        const data = await chatRequest("/api/chats", token);
+        setSessions(data.sessions);
+      } catch { setError((current) => current || "Could not refresh chat history. Please refresh the page."); }
       setIsTyping(false);
     }
   };
 
   const clearChat = () => {
+    if (isTyping || historyLoading) return;
+    setSessionId(null);
+    rememberSession(null);
+    setMessage("");
+    setError("");
+    setActiveTab("chat");
     setUploadedFile(null);
     setMessages([
       {
@@ -151,6 +238,25 @@ function App() {
 
   return (
     <div style={styles.container}>
+      <div className="chat-layout">
+      <aside className="chat-history" aria-label="Chat history">
+        <h2>Chat history</h2>
+        <button className="new-chat" type="button" onClick={clearChat} disabled={isTyping || historyLoading}>+ New chat</button>
+        <p className="history-note">Saved for this browser</p>
+        {historyLoading && <p role="status">Loading conversations…</p>}
+        {!historyLoading && sessions.length === 0 && <p>No saved chats yet. Send a message to start.</p>}
+        <div className="history-list">
+          {sessions.map((session) => (
+            <button key={session.session_id} type="button"
+              className={`history-item ${String(session.session_id) === sessionId ? "selected" : ""}`}
+              aria-current={String(session.session_id) === sessionId ? "true" : undefined}
+              disabled={isTyping || historyLoading} onClick={() => openChat(session.session_id)}>
+              <span>{session.title || "Untitled conversation"}</span>
+              <small>{new Date(session.updated_at).toLocaleDateString()}</small>
+            </button>
+          ))}
+        </div>
+      </aside>
       <div style={styles.chatBox}>
         <div style={styles.header}>
           <div>
@@ -158,10 +264,12 @@ function App() {
             <div style={styles.headerSubtitle}>Online and ready to help</div>
           </div>
 
-          <button style={styles.clearButton} onClick={clearChat} type="button">
-            Clear
+          <button style={styles.clearButton} onClick={clearChat} type="button" disabled={isTyping || historyLoading}>
+            New chat
           </button>
         </div>
+
+        {error && <div className="chat-error" role="alert">{error}</div>}
 
         <div style={styles.tabBar}>
           {[
@@ -290,7 +398,7 @@ function App() {
                 style={styles.uploadButton}
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isTyping}
+                disabled={isTyping || historyLoading || !token}
                 title="Upload file"
               >
                 +
@@ -306,13 +414,15 @@ function App() {
                   }
                 }}
                 placeholder="Type a message..."
+                aria-label="Message"
+                disabled={isTyping || historyLoading || !token}
                 rows={1}
               />
 
               <button
                 style={styles.button}
                 onClick={handleSend}
-                disabled={isTyping || (message.trim() === "" && !uploadedFile)}
+                disabled={isTyping || historyLoading || !token || (message.trim() === "" && !uploadedFile)}
               >
                 Send
               </button>
@@ -339,7 +449,7 @@ function App() {
             <div style={styles.infoCard}>
               <strong>Can I clear the conversation?</strong>
               <p style={styles.infoText}>
-                Yes. Use the Clear button in the header to reset the chat.
+                Use New chat to start another conversation. Previous conversations stay in Chat history.
               </p>
             </div>
           </div>
@@ -360,6 +470,7 @@ function App() {
             </div>
           </div>
         )}
+      </div>
       </div>
 
       <style>
@@ -393,12 +504,13 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
+    minHeight: "100vh",
     backgroundColor: "#eef2f7",
   },
   chatBox: {
-    width: "400px",
-    height: "600px",
+    flex: 1,
+    minWidth: 0,
+    height: "min(720px, 88vh)",
     backgroundColor: "#fff",
     display: "flex",
     flexDirection: "column",
