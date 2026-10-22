@@ -4,6 +4,7 @@ const { randomBytes, createHash } = require("node:crypto");
 const { once } = require("node:events");
 const { app } = require("../server");
 const { pool } = require("../database");
+const { initializeHistory } = require('../chat-history');
 
 const token = randomBytes(32).toString("hex");
 const otherToken = randomBytes(32).toString("hex");
@@ -13,9 +14,9 @@ let base;
 let captured;
 let checks = 0;
 const pass = (name) => { checks++; console.log(`PASS: ${name}`); };
-async function request(route, body, identity = token) {
+async function request(route, body, identity = token, method) {
   const response = await fetch(base + route, {
-    method: body ? "POST" : "GET",
+    method: method || (body ? "POST" : "GET"),
     headers: { "Content-Type": "application/json", ...(identity ? { "X-Chat-Token": identity } : {}) },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
@@ -24,6 +25,7 @@ async function request(route, body, identity = token) {
 
 (async () => {
   try {
+    await initializeHistory();
     app.locals.generateReply = async (history) => { captured = history; return "Test answer"; };
     server = app.listen(0, "127.0.0.1");
     await once(server, "listening");
@@ -81,6 +83,37 @@ async function request(route, body, identity = token) {
     assert.notEqual(fresh.data.sessionId, id);
     assert.equal((await request("/api/chats")).data.sessions.length, 2);
     pass("New chat preserves previous conversations");
+    const answerId = reopened.data.messages[1].message_id;
+    const actionPath = `/api/chats/${id}/messages/${answerId}`;
+    assert.equal((await request(`${actionPath}/feedback`, { rating: 1 })).status, 200);
+    assert.equal(Number((await request(`/api/chats/${id}/messages`)).data.messages[1].rating), 1);
+    assert.equal((await request(`${actionPath}/feedback`, { rating: -1 }, otherToken)).status, 404);
+    assert.equal((await request(`${actionPath}/feedback`, { rating: 3 })).status, 400);
+    assert.equal((await request(`${actionPath}/retry`, {}, otherToken)).status, 404);
+    app.locals.generateReply = async (history) => { assert.equal(history.length, 1); return 'Retried answer'; };
+    assert.equal((await request(`${actionPath}/retry`, {})).status, 200);
+    const retried = (await request(`/api/chats/${id}/messages`)).data.messages;
+    assert.equal(retried[1].content, 'Test answer');
+    assert.equal(retried[retried.length - 1].content, 'Retried answer');
+    pass('Feedback persists and retry uses original context, preserves replies, and enforces ownership');
+    assert.equal((await request(`/api/chats/${id}`, { title: 'Renamed chat', pinned: true }, token, 'PATCH')).status, 200);
+    let ordered = (await request('/api/chats')).data.sessions;
+    assert.equal(String(ordered[0].session_id), id);
+    assert.equal(ordered[0].title, 'Renamed chat');
+    assert.equal(Number(ordered[0].pinned), 1);
+    pass('Rename and pin persist; pinned chats sort first');
+    assert.equal((await request(`/api/chats/${id}`, { title: 'Intrusion' }, otherToken, 'PATCH')).status, 404);
+    assert.equal((await request(`/api/chats/${id}`, null, otherToken, 'DELETE')).status, 404);
+    assert.equal((await request(`/api/chats/${id}`, { title: '' }, token, 'PATCH')).status, 400);
+    assert.equal((await request(`/api/chats/${id}`, { pinned: 'true' }, token, 'PATCH')).status, 400);
+    pass('Chat actions enforce ownership and validate inputs');
+    assert.equal((await request(`/api/chats/${id}`, { pinned: false }, token, 'PATCH')).status, 200);
+    assert.equal((await request(`/api/chats/${id}`, null, token, 'DELETE')).status, 200);
+    assert.equal((await request(`/api/chats/${id}/messages`)).status, 404);
+    const [[remaining]] = await pool.execute('SELECT COUNT(*) AS total FROM chat_messages WHERE session_id=?', [id]);
+    assert.equal(Number(remaining.total), 0);
+    assert.equal((await request('/api/chats')).data.sessions.length, 1);
+    pass('Unpin and deletion work; deleted messages are removed and other chats remain');
     console.log(`${checks} chat-history checks passed. AI replies were mocked; MySQL was real.`);
   } catch (error) {
     console.error("Chat history test failed:", error.code || error.message);

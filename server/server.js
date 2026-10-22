@@ -3,7 +3,8 @@ const { pool, checkDatabase } = require("./database");
 const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
-const { browserIdentity, listChats, readChat, saveQuestion } = require("./chat-history");
+const { browserIdentity, listChats, readChat, saveQuestion, initializeHistory, installHistoryActions } = require("./chat-history");
+const { installAuth, initializeAuth, origin } = require('./auth');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -15,8 +16,10 @@ const openai = new OpenAI({
   ...(apiBaseUrl ? { baseURL: apiBaseUrl } : {}),
 });
 
-app.use(cors());
+app.use(cors({ origin, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
+installAuth(app);
+installHistoryActions(app);
 
 function getOpenAIErrorReply(error) {
   if (error.code === "insufficient_quota") {
@@ -112,6 +115,23 @@ app.get("/health/db", async (req, res) => {
 });
 
 app.locals.generateReply = createChatbotReply;
+app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, async (req, res) => {
+  if (![req.params.sessionId, req.params.messageId].every((id) => /^[1-9]\d{0,19}$/.test(id))) return res.status(400).json({ reply: 'Invalid reply ID.' });
+  try {
+    const chat = await readChat(req.chatEmail, req.params.sessionId, true);
+    const index = chat?.messages.findIndex((m) => String(m.message_id) === req.params.messageId && m.role === 'assistant');
+    if (!chat || index < 0) return res.status(404).json({ reply: 'Reply not found.' });
+    const history = chat.messages.slice(0, index);
+    if (!history.some((m) => m.role === 'user')) return res.status(400).json({ reply: 'No question to retry.' });
+    const reply = await app.locals.generateReply(history);
+    if (!reply) throw new Error('Empty reply');
+    await pool.execute("INSERT INTO chat_messages (session_id,role,content) VALUES (?,'assistant',?)", [req.params.sessionId, reply]);
+    res.json({ ok: true });
+  } catch (error) {
+    const result = getOpenAIErrorReply(error);
+    res.status(result.status).json({ reply: result.reply });
+  }
+});
 
 app.get("/api/chats", browserIdentity, async (req, res) => {
   try {
@@ -193,6 +213,8 @@ app.post("/message", browserIdentity, async (req, res) => {
 
 async function startServer() {
   await checkDatabase();
+  await initializeAuth();
+  await initializeHistory();
   console.log("Database connected");
   const server = app.listen(port);
   server.once("listening", () => {

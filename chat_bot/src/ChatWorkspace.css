@@ -1,0 +1,29 @@
+.assistant-workspace .unified-chat {
+  gap: 0;
+  padding: 0;
+  margin-block: 18px;
+  background: #fff;
+  border: 1px solid #dae2dd;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px #183d3709;
+}
+.assistant-workspace .unified-chat > .chat-history {
+  flex-shrink: 0;
+  border: 0;
+  border-right: 1px solid #dae2dd;
+  border-radius: 0;
+  background: #f4f7f4;
+}
+.assistant-workspace .chat-layout.unified-chat > div {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+@media (max-width: 640px) {
+  .assistant-workspace .unified-chat > .chat-history {
+    border-right: 0;
+    border-bottom: 1px solid #dae2dd;
+    width: 100%;
+  }
+}
