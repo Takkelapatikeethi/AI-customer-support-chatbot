@@ -4,6 +4,7 @@ import './MessageActions.css';
 import './HistoryActions.css';
 import VoiceInput from './VoiceInput';
 import './ChatWorkspace.css';
+import './ChatScreen.css';
 import ReplyActions from './ReplyActions';
 import Account from './Account';
 
@@ -82,6 +83,7 @@ function App() {
   const [editingMessage, setEditingMessage] = useState(null);
   const [actionNotice, setActionNotice] = useState('');
   const [listening, setListening] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const composerRef = useRef(null);
   const editMessage = (msg, index) => {
     setEditingMessage({ index, draft: message, file: uploadedFile });
@@ -183,6 +185,7 @@ function App() {
       setActionNotice('');
       setUploadedFile(null);
       setActiveTab("chat");
+      setSidebarOpen(false);
     } catch (err) { setError(err.message); }
     finally { setHistoryLoading(false); }
   };
@@ -266,6 +269,7 @@ function App() {
   const clearChat = () => {
     if (isTyping || historyLoading) return;
     setSessionId(null);
+    setSidebarOpen(false);
     rememberSession(null);
     setMessage("");
     setEditingMessage(null);
@@ -342,7 +346,7 @@ function App() {
   );
 
   return (
-    <div className="website">
+    <div className={`website chat-screen ${sidebarOpen ? 'sidebar-open' : ''} ${user || guestAccess ? 'chat-entered' : 'chat-welcome'}`}>
       <a className="skip-link" href="#assistant">Skip to assistant</a>
       <header className="site-nav">
         <a className="site-mark" href="#home" aria-label="Home"><span className="mark-icon">✳</span> AI Assistant</a>
@@ -383,6 +387,7 @@ function App() {
     <div className="assistant-workspace" style={styles.container}>
       <div className="chat-layout unified-chat">
       <aside className="chat-history" aria-label="Chat history">
+        <div className="sidebar-brand"><strong>AI Assistant</strong><button type="button" aria-label="Close sidebar" onClick={() => setSidebarOpen(false)}>×</button></div>
         <h2>Chat history</h2>
         <button className="new-chat" type="button" onClick={clearChat} disabled={isTyping || historyLoading}>+ New chat</button>
         <p className="history-note">{user ? `Saved to ${user.username}'s account` : 'Saved for this browser'}</p>
@@ -405,12 +410,14 @@ function App() {
             </div></details></div>
           ))}
         </div>
+        <div className="sidebar-account"><Account api={API_BASE} user={user} busy={isTyping || historyLoading} /><small>{user ? 'Your personal workspace' : 'Guest workspace'}</small></div>
       </aside>
-      <div style={styles.chatBox}>
-        <div style={styles.header}>
+      <div style={styles.chatBox} className="conversation-panel">
+        <div style={styles.header} className="conversation-header">
+          <button className="sidebar-toggle" type="button" aria-label="Toggle chat history" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((open) => !open)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
           <div>
-            <div style={styles.headerTitle}>Support Assistant</div>
-            <div style={styles.headerSubtitle}>AI-powered · Answers may need checking</div>
+            <div style={styles.headerTitle}>AI Assistant</div>
+            <div style={styles.headerSubtitle}>Your everyday thinking partner</div>
           </div>
 
           <button style={styles.clearButton} onClick={clearChat} type="button" disabled={isTyping || historyLoading}>
@@ -442,10 +449,12 @@ function App() {
 
         {activeTab === "chat" && (
           <>
-            <div style={styles.messages} role="log" aria-label="Conversation" aria-live="polite">
+            <div style={styles.messages} className={`conversation-messages ${!sessionId && messages.length === 1 ? 'empty-conversation' : ''}`} role="log" aria-label="Conversation" aria-live="polite">
+              {!sessionId && messages.length === 1 && <div className="chat-empty-heading"><span className="empty-spark" aria-hidden="true">✦</span><h1>What can I help with?</h1><p>Ask a question, explore an idea, or upload a file.</p></div>}
               {messages.map((msg, index) => (
                 <div
                   key={index}
+                  className="conversation-message-row"
                   style={{
                     ...styles.messageRow,
                     justifyContent:
