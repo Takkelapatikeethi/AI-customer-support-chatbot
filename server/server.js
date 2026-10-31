@@ -5,8 +5,6 @@ const cors = require("cors");
 const OpenAI = require("openai");
 const { browserIdentity, listChats, readChat, saveQuestion, initializeHistory, installHistoryActions } = require("./chat-history");
 const { installAuth, initializeAuth, origin } = require('./auth');
-const { installCompanyKnowledgeRoutes } = require('./company-knowledge');
-const { generateConversationReply, companyReferenceMessage, COMPANY_INSTRUCTIONS } = require('./company-chat');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -22,12 +20,8 @@ app.use(cors({ origin, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 installAuth(app);
 installHistoryActions(app);
-installCompanyKnowledgeRoutes(app);
 
 function getOpenAIErrorReply(error) {
-  if (error.code === 'KNOWLEDGE_UNAVAILABLE') {
-    return { status: 503, reply: 'Company information is temporarily unavailable. Please try again.' };
-  }
   if (error.code === "insufficient_quota") {
     return {
       status: 429,
@@ -75,25 +69,15 @@ function buildUserInput(userMessage, fileContext) {
   ].join("\n");
 }
 
-function buildChatbotInput(history, context = {}) {
-  const instructions = context.authenticated ? COMPANY_INSTRUCTIONS : "You are a helpful, friendly chatbot. Keep replies concise.";
+async function createChatbotReply(history) {
+  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+  const instructions = "You are a helpful, friendly chatbot. Keep replies concise.";
   const input = history.slice(-40).map((message) => ({
     role: message.role,
     content: buildUserInput(message.content, message.file_name
       ? { name: message.file_name, content: message.file_content } : null),
   }));
-  if (context.authenticated) {
-    // Keep references separate from history, immediately before the current question.
-    let questionIndex = input.length - 1;
-    while (questionIndex >= 0 && input[questionIndex].role !== 'user') questionIndex--;
-    input.splice(Math.max(0, questionIndex), 0, companyReferenceMessage(context.knowledge || []));
-  }
-  return { instructions, input };
-}
 
-async function createChatbotReply(history, context = {}) {
-  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
-  const { instructions, input } = buildChatbotInput(history, context);
   if (isOpenRouter()) {
     const response = await openai.chat.completions.create({
       model,
@@ -139,12 +123,10 @@ app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, asy
     if (!chat || index < 0) return res.status(404).json({ reply: 'Reply not found.' });
     const history = chat.messages.slice(0, index);
     if (!history.some((m) => m.role === 'user')) return res.status(400).json({ reply: 'No question to retry.' });
-    const { reply, sources } = await generateConversationReply(history, {
-      authenticated: Boolean(req.chatAccount), generateReply: app.locals.generateReply,
-    });
+    const reply = await app.locals.generateReply(history);
     if (!reply) throw new Error('Empty reply');
     await pool.execute("INSERT INTO chat_messages (session_id,role,content) VALUES (?,'assistant',?)", [req.params.sessionId, reply]);
-    res.json({ ok: true, reply, sessionId: String(req.params.sessionId), saved: true, sources });
+    res.json({ ok: true });
   } catch (error) {
     const result = getOpenAIErrorReply(error);
     res.status(result.status).json({ reply: result.reply });
@@ -209,12 +191,9 @@ app.post("/message", browserIdentity, async (req, res) => {
   }
 
   let reply;
-  let sources;
   try {
     const chat = await readChat(req.chatEmail, sessionId, true);
-    ({ reply, sources } = await generateConversationReply(chat.messages, {
-      authenticated: Boolean(req.chatAccount), generateReply: app.locals.generateReply,
-    }));
+    reply = await app.locals.generateReply(chat.messages);
     if (!reply) throw new Error("Empty AI response");
   } catch (error) {
     console.error(`${providerName} API error:`, error.code || error.status || "AI_ERROR");
@@ -225,7 +204,7 @@ app.post("/message", browserIdentity, async (req, res) => {
   try {
     await pool.execute("INSERT INTO chat_messages (session_id, role, content) VALUES (?, 'assistant', ?)",
       [sessionId, reply]);
-    res.json({ reply, sessionId, saved: true, sources });
+    res.json({ reply, sessionId, saved: true });
   } catch (error) {
     console.error("Saving response failed:", error.code || "DATABASE_ERROR");
     res.status(503).json({ reply: "Your question was saved, but the response could not be saved. Please try again.", sessionId, saved: true });
@@ -272,4 +251,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, startServer, buildChatbotInput };
+module.exports = { app, startServer };
