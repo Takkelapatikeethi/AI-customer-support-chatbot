@@ -2,101 +2,22 @@ const { pool, checkDatabase } = require("./database");
 
 const express = require("express");
 const cors = require("cors");
-const OpenAI = require("openai");
+const { createDatabaseReply } = require('./database-answers');
 const { browserIdentity, listChats, readChat, saveQuestion, initializeHistory, installHistoryActions } = require("./chat-history");
 const { installAuth, initializeAuth, origin } = require('./auth');
 
 const app = express();
 const port = process.env.PORT || 5000;
-const apiBaseUrl = process.env.OPENAI_BASE_URL;
-const providerName = apiBaseUrl ? "AI provider" : "OpenAI";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  ...(apiBaseUrl ? { baseURL: apiBaseUrl } : {}),
-});
-
 app.use(cors({ origin, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
 installAuth(app);
 installHistoryActions(app);
 
-function getOpenAIErrorReply(error) {
-  if (error.code === "insufficient_quota") {
-    return {
-      status: 429,
-      reply:
-        `${providerName} quota exceeded. Please check your billing or credits.`,
-    };
-  }
-
-  if (error.status === 401 || error.code === "invalid_api_key") {
-    return {
-      status: 401,
-      reply: `${providerName} API key is invalid. Please check server/.env.`,
-    };
-  }
-
-  if (error.status === 429) {
-    return {
-      status: 429,
-      reply: `${providerName} is rate limiting requests. Please try again shortly.`,
-    };
-  }
-
+function getReplyError(error) {
   return {
-    status: 500,
-    reply: `Sorry, I could not get a response from ${providerName} right now.`,
+    status: error.status === 429 ? 429 : 503,
+    reply: "The answer database is temporarily unavailable. Please try again.",
   };
-}
-
-function isOpenRouter() {
-  return apiBaseUrl && apiBaseUrl.includes("openrouter.ai");
-}
-
-function buildUserInput(userMessage, fileContext) {
-  if (!fileContext?.content) {
-    return userMessage;
-  }
-
-  return [
-    "Use the uploaded file information as context when it is relevant.",
-    `Uploaded file: ${fileContext.name || "uploaded-file"}`,
-    "",
-    fileContext.content,
-    "",
-    `User question: ${userMessage}`,
-  ].join("\n");
-}
-
-async function createChatbotReply(history) {
-  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
-  const instructions = "You are a helpful, friendly chatbot. Keep replies concise.";
-  const input = history.slice(-40).map((message) => ({
-    role: message.role,
-    content: buildUserInput(message.content, message.file_name
-      ? { name: message.file_name, content: message.file_content } : null),
-  }));
-
-  if (isOpenRouter()) {
-    const response = await openai.chat.completions.create({
-      model,
-      messages: [
-        { role: "system", content: instructions },
-        ...input,
-      ],
-    });
-
-    return response.choices?.[0]?.message?.content;
-  }
-
-  const response = await openai.responses.create({
-    model,
-    instructions,
-    input,
-  });
-
-  return response.output_text;
 }
 
 app.get("/", (req, res) => {
@@ -114,7 +35,7 @@ app.get("/health/db", async (req, res) => {
   }
 });
 
-app.locals.generateReply = createChatbotReply;
+app.locals.generateReply = createDatabaseReply;
 app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, async (req, res) => {
   if (![req.params.sessionId, req.params.messageId].every((id) => /^[1-9]\d{0,19}$/.test(id))) return res.status(400).json({ reply: 'Invalid reply ID.' });
   try {
@@ -128,7 +49,7 @@ app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, asy
     await pool.execute("INSERT INTO chat_messages (session_id,role,content) VALUES (?,'assistant',?)", [req.params.sessionId, reply]);
     res.json({ ok: true });
   } catch (error) {
-    const result = getOpenAIErrorReply(error);
+    const result = getReplyError(error);
     res.status(result.status).json({ reply: result.reply });
   }
 });
@@ -175,12 +96,6 @@ app.post("/message", browserIdentity, async (req, res) => {
     return res.status(400).json({ reply: "Please upload a text file smaller than 150 KB." });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({
-      reply: "API key is missing. Add OPENAI_API_KEY to server/.env.",
-    });
-  }
-
   let sessionId;
   try {
     sessionId = await saveQuestion(req.chatEmail, req.body.sessionId, userMessage.trim(), fileContext);
@@ -194,11 +109,11 @@ app.post("/message", browserIdentity, async (req, res) => {
   try {
     const chat = await readChat(req.chatEmail, sessionId, true);
     reply = await app.locals.generateReply(chat.messages);
-    if (!reply) throw new Error("Empty AI response");
+    if (!reply) throw new Error("Empty database answer");
   } catch (error) {
-    console.error(`${providerName} API error:`, error.code || error.status || "AI_ERROR");
+    console.error("Answer lookup failed:", error.code || "DATABASE_ERROR");
 
-    const { status, reply } = getOpenAIErrorReply(error);
+    const { status, reply } = getReplyError(error);
     return res.status(status).json({ reply, sessionId, saved: true });
   }
   try {

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "IT-001", "category": "IT Support",
+    "question": "How do I reset my company password?",
+    "alternativePhrases": ["I forgot my password", "I cannot sign into my work account"],
+    "keywords": ["password", "reset", "forgot", "login", "sign in"],
+    "answer": "Use Forgot Password in the NovaTech Employee Portal and complete identity verification using your registered recovery method. Follow the password requirements displayed there. If recovery is unavailable, contact the NovaTech IT Service Desk using the details in your onboarding pack. Never share passwords or verification codes.",
+    "sourceName": "Account Recovery Guide", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "IT-002", "category": "IT Support",
+    "question": "How do I request a replacement laptop?",
+    "alternativePhrases": ["My work computer is broken", "My work machine stopped functioning"],
+    "keywords": ["laptop", "computer", "hardware", "broken", "replacement", "machine"],
+    "answer": "Create a hardware ticket with the NovaTech IT Service Desk. Include the asset tag, symptoms, and visible damage. IT will diagnose the device and decide whether repair or replacement is appropriate. Ask about a loan device if you cannot work. Do not dispose of the device or arrange an unapproved repair.",
+    "sourceName": "IT Equipment Support Policy", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "IT-003", "category": "IT Support",
+    "question": "What should I do when the company VPN does not connect?",
+    "alternativePhrases": ["I cannot connect to the VPN", "Remote network access is not working"],
+    "keywords": ["vpn", "network", "connection", "remote", "connect"],
+    "answer": "Check that your internet works, restart the approved VPN application, and confirm you are using your company account and completing MFA. Do not disable security tools or install an alternative VPN. If the problem continues, submit a NovaTech IT Service Desk ticket with the error text, time, and operating system. Exclude passwords and verification codes.",
+    "sourceName": "Remote Connectivity Guide", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "IT-004", "category": "IT Support",
+    "question": "How do I request software installation?",
+    "alternativePhrases": ["I need a program installed", "Can I install an application on my laptop"],
+    "keywords": ["software", "installation", "install", "program", "license"],
+    "answer": "Submit a request through the NovaTech IT Service Desk with the application name, business reason, and required license details. Your manager approves the business need; IT checks licensing and security before installation. Do not install unapproved software or use a personal license for company work without approval.",
+    "sourceName": "Approved Software Policy", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "IT-005", "category": "IT Support",
+    "question": "How do I escalate an unresolved IT ticket?",
+    "alternativePhrases": ["My support request is not resolved", "I need urgent help with an existing ticket"],
+    "keywords": ["help desk", "ticket", "escalation", "urgent", "support", "unresolved"],
+    "answer": "Update your existing NovaTech IT Service Desk ticket with the current business impact and new error details. Ask for escalation if the issue blocks work or affects multiple employees. Your manager may request prioritization through that ticket. Avoid duplicate tickets. Suspected security incidents must be reported immediately through the security reporting process.",
+    "sourceName": "IT Support Escalation Guide", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "SEC-001", "category": "Information Security",
+    "question": "What should I do if a company device is lost or stolen?",
+    "alternativePhrases": ["I lost my work laptop", "My company phone was stolen"],
+    "keywords": ["lost", "stolen", "device", "laptop", "phone", "theft"],
+    "answer": "Report the loss immediately through the NovaTech Security Portal using another trusted device. If unavailable, use the security contact in your onboarding pack. Provide the device type, asset tag if known, last location, and time of loss. Notify your manager. Security coordinates access protection and remote lock or wipe. Do not attempt to recover a stolen device yourself.",
+    "sourceName": "Lost Device Response Procedure", "sourceUrl": null, "department": "Security",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "SEC-002", "category": "Information Security",
+    "question": "How do I report a phishing email?",
+    "alternativePhrases": ["I clicked a suspicious email", "A message is trying to steal my credentials"],
+    "keywords": ["phishing", "suspicious", "email", "credentials", "scam", "clicked", "link"],
+    "answer": "Use Report Phishing in the approved company email client or report through the NovaTech Security Portal. Do not click links, open attachments, or reply. If you already clicked, downloaded a file, entered credentials, or approved an unexpected MFA request, report those details immediately and follow Security instructions. Never include passwords in the report.",
+    "sourceName": "Phishing Reporting Procedure", "sourceUrl": null, "department": "Security",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "SEC-003", "category": "Information Security",
+    "question": "What should I do when my MFA code does not work?",
+    "alternativePhrases": ["My authentication code is failing", "I changed phones and cannot approve sign in"],
+    "keywords": ["mfa", "authentication", "code", "authenticator", "phone", "verification"],
+    "answer": "Check automatic device time and the account selected in your approved authenticator. If sign-in still fails or your registered device is lost, contact the NovaTech IT Service Desk using your onboarding pack details. IT verifies your identity before resetting MFA. Do not approve unexpected requests or share codes. Report suspicious requests through the NovaTech Security Portal.",
+    "sourceName": "Multi-Factor Authentication Recovery Guide", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "SEC-004", "category": "Information Security",
+    "question": "How do I report a suspected security incident?",
+    "alternativePhrases": ["I think my account was compromised", "I noticed suspicious activity on my computer"],
+    "keywords": ["security", "incident", "compromised", "breach", "malware", "suspicious"],
+    "answer": "Report suspected unauthorized access, malware, or data exposure immediately through the NovaTech Security Portal. If unavailable, use the security contact in your onboarding pack. Describe what happened, when, and affected accounts or devices. Preserve relevant messages without unnecessarily copying sensitive data. Do not investigate independently or delete evidence. Follow the Security team's instructions.",
+    "sourceName": "Security Incident Reporting Standard", "sourceUrl": null, "department": "Security",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "HR-001", "category": "HR",
+    "question": "Where can I check my paid time off balance?",
+    "alternativePhrases": ["How much PTO do I have", "Where is my leave entitlement shown"],
+    "keywords": ["pto", "leave", "balance", "entitlement", "paid time off"],
+    "answer": "Open Leave in the NovaTech Employee Portal to view your balance, pending requests, and the policy assigned to your location and contract. Entitlements and carryover rules vary; use the policy shown for your profile rather than assuming a universal allowance. Contact HR through the portal if your balance appears incorrect.",
+    "sourceName": "Paid Time Off Guide", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "HR-002", "category": "HR",
+    "question": "How do I report sick leave?",
+    "alternativePhrases": ["I am ill and cannot work today", "How do I record a sick day"],
+    "keywords": ["sick", "ill", "illness", "absence", "sickness"],
+    "answer": "Tell your manager as soon as reasonably possible that you cannot work, then record sick leave in the NovaTech Employee Portal when able. If you cannot access it, ask your manager or HR for help. HR explains documentation requirements under your local policy. Send medical details only through the designated confidential HR channel, not a general ticket.",
+    "sourceName": "Sickness Absence Procedure", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "HR-003", "category": "HR",
+    "question": "How do I request vacation?",
+    "alternativePhrases": ["I need some days off", "I will be away from work for several days"],
+    "keywords": ["vacation", "holiday", "days off", "leave request", "time off", "approval"],
+    "answer": "Check your leave balance in the NovaTech Employee Portal, discuss dates and coverage with your manager, and submit a vacation request in Leave. Wait for portal approval before treating dates as confirmed or making non-refundable arrangements. Notice requirements and blackout periods depend on your location and team policy. Ask HR about exceptions.",
+    "sourceName": "Vacation Request and Approval Process", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "HR-004", "category": "HR",
+    "question": "Where can I find employee benefits information?",
+    "alternativePhrases": ["How do I check my benefits", "Where can I see benefit enrollment options"],
+    "keywords": ["benefits", "insurance", "enrollment", "eligibility", "coverage"],
+    "answer": "Open Benefits in the NovaTech Employee Portal for applicable plans, eligibility rules, enrollment windows, and provider documents. Use the HR request option for enrollment problems or qualifying changes. Do not assume coverage is active until confirmed. Submit personal or health information only through the designated secure HR process.",
+    "sourceName": "Employee Benefits Guide", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "APP-001", "category": "Application Access",
+    "question": "How do I request access to a business application?",
+    "alternativePhrases": ["I need permission to use an internal system", "Please give me access to a work tool"],
+    "keywords": ["application", "access", "permission", "internal system", "account", "tool"],
+    "answer": "Submit a NovaTech Access Portal request with the application, required role, business reason, and duration. Your manager and the application owner approve the request. IT provisions only approved permissions and confirms completion in the portal. Never borrow a colleague's account or request access beyond your work requirements.",
+    "sourceName": "Business Application Access Standard", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "APP-002", "category": "Application Access",
+    "question": "How do I change or remove application access?",
+    "alternativePhrases": ["My job changed and I need different permissions", "Please revoke access I no longer need"],
+    "keywords": ["access", "remove", "revoke", "permissions", "role change", "transfer"],
+    "answer": "Submit an access-change request in the NovaTech Access Portal with the application, current permissions, requested changes, and effective date. Managers review access during transfers and departures. The application owner approves additions; IT confirms updates or removal. Suspected unauthorized access must also be reported immediately through the NovaTech Security Portal.",
+    "sourceName": "Access Change and Removal Procedure", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "FIN-001", "category": "Finance",
+    "question": "How do I submit an expense reimbursement?",
+    "alternativePhrases": ["I paid for a work purchase", "How do I claim my money back"],
+    "keywords": ["expense", "reimbursement", "receipt", "claim", "purchase", "paid"],
+    "answer": "Create a NovaTech Expense Portal claim with business purpose, date, amount, currency, itemized receipt, and cost center. Submit for manager approval and Finance review. Consult your location's expense policy for eligibility and deadlines. Explain missing receipts through the exception process. Check claim and payment status in the portal; submission does not guarantee reimbursement.",
+    "sourceName": "Expense Reimbursement Submission Guide", "sourceUrl": null, "department": "Finance",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "FIN-002", "category": "Finance",
+    "question": "What is the process for business travel expenses?",
+    "alternativePhrases": ["I paid for something during a business trip", "How do I claim hotel and travel costs"],
+    "keywords": ["business trip", "travel", "hotel", "transport", "expense", "booking"],
+    "answer": "Obtain manager approval before booking and use the approved method in the NovaTech Employee Portal. Review the travel policy for destination-specific limits and eligible costs. Keep itemized receipts and submit eligible expenses in the NovaTech Expense Portal with the trip purpose and approval reference. Personal upgrades and unapproved costs need a policy exception; reimbursement is not guaranteed.",
+    "sourceName": "Business Travel Approval and Expenses Policy", "sourceUrl": null, "department": "Finance",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "ONB-001", "category": "Employee Onboarding",
+    "question": "How does a new employee get their technology set up?",
+    "alternativePhrases": ["I am starting work and need my laptop and accounts", "What IT setup do new starters need"],
+    "keywords": ["new starter", "technology", "setup", "laptop", "accounts", "onboarding"],
+    "answer": "Your manager submits a new-starter request to the NovaTech IT Service Desk before your start date. IT arranges your device, company account, and baseline access. Follow securely delivered activation instructions, enroll MFA, and complete the device checklist. Ask your manager to update the starter ticket for missing items. Do not send passwords or identity documents through chat.",
+    "sourceName": "New Employee Technology Checklist", "sourceUrl": null, "department": "IT",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "ONB-002", "category": "Employee Onboarding",
+    "question": "What should I complete during my first week?",
+    "alternativePhrases": ["What are my onboarding tasks", "What do I do after joining the company"],
+    "keywords": ["first week", "onboarding", "induction", "new employee", "joining", "training"],
+    "answer": "Review your NovaTech Employee Portal onboarding checklist with your manager. Complete HR details through secure forms, activate IT access, attend team introductions, and finish assigned security and workplace training. Your manager confirms role-specific priorities. Send access problems to the NovaTech IT Service Desk and HR or checklist questions through the Employee Portal.",
+    "sourceName": "First-Week Onboarding Checklist", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  },
+  {
+    "id": "WORK-001", "category": "Workplace Policy",
+    "question": "How do I request remote or hybrid working?",
+    "alternativePhrases": ["Can I work from home", "How many days can I work remotely"],
+    "keywords": ["remote", "hybrid", "work from home", "office", "location"],
+    "answer": "Discuss your proposed schedule and location with your manager and record required requests in the NovaTech Employee Portal. Eligibility depends on role, team coverage, location, and the applicable policy; there is no assumed allowance of remote days. Use approved devices and secure connections. Obtain required HR approval before working from another country.",
+    "sourceName": "Remote and Hybrid Working Policy", "sourceUrl": null, "department": "HR",
+    "accessLevel": "employee", "isActive": true, "isSynthetic": true, "companyName": "NovaTech Solutions"
+  }
+]
