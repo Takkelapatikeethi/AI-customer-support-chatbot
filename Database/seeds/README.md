@@ -12,4 +12,4 @@ DynamoDB does not train on these records or perform automatic natural-language m
 
 All items are marked `accessLevel: employee`; this is metadata, not access enforcement. The current guest-enabled MySQL FAQ flow must not be connected to this internal dataset without server-side authenticated-account checks. Registration alone also does not establish actual employment; a real deployment needs a way to verify employee access.
 
-No AWS resources, DynamoDB writes, application routes, MySQL records, or React files are changed by this dataset. The current application continues using its existing MySQL FAQ lookup until a separate integration is implemented.
+The dataset file itself does not create resources or insert records. The 20 records were subsequently imported through CloudShell, and the backend integration is documented in `../DYNAMODB_SUPPORT.md`. React and MySQL accounts/history remain unchanged.

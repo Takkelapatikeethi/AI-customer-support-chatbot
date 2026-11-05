@@ -9,6 +9,7 @@ async function browserIdentity(req, res, next) {
       const user = await account(req);
       if (!user) return res.status(401).json({ reply: 'Your login expired. Please log in again.' });
       req.chatEmail = user.email;
+      req.chatAccount = user;
       return next();
     }
   } catch { return res.status(503).json({ reply: 'Could not verify your account. Please try again.' }); }

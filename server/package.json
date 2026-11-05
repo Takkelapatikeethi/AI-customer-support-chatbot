@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "check:db": "node scripts/check-db.js",
+    "check:dynamodb": "node scripts/check-dynamodb.js",
+    "test:dynamodb": "node --test scripts/test-dynamodb-answers.js",
+    "test:dynamodb-chat": "node scripts/test-dynamodb-chat.js",
+    "test:dynamodb-live": "node scripts/test-dynamodb-chat.js --live",
     "test:history": "node scripts/test-chat-history.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1162.0",
+    "@aws-sdk/lib-dynamodb": "^3.1162.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

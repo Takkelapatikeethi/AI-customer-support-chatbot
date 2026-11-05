@@ -2,7 +2,7 @@ const { pool, checkDatabase } = require("./database");
 
 const express = require("express");
 const cors = require("cors");
-const { createDatabaseReply } = require('./database-answers');
+const { createDynamoReply } = require('./dynamodb-answers');
 const { browserIdentity, listChats, readChat, saveQuestion, initializeHistory, installHistoryActions } = require("./chat-history");
 const { installAuth, initializeAuth, origin } = require('./auth');
 
@@ -35,7 +35,7 @@ app.get("/health/db", async (req, res) => {
   }
 });
 
-app.locals.generateReply = createDatabaseReply;
+app.locals.generateReply = createDynamoReply;
 app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, async (req, res) => {
   if (![req.params.sessionId, req.params.messageId].every((id) => /^[1-9]\d{0,19}$/.test(id))) return res.status(400).json({ reply: 'Invalid reply ID.' });
   try {
@@ -44,7 +44,7 @@ app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, asy
     if (!chat || index < 0) return res.status(404).json({ reply: 'Reply not found.' });
     const history = chat.messages.slice(0, index);
     if (!history.some((m) => m.role === 'user')) return res.status(400).json({ reply: 'No question to retry.' });
-    const reply = await app.locals.generateReply(history);
+    const reply = await app.locals.generateReply(history, { account: req.chatAccount });
     if (!reply) throw new Error('Empty reply');
     await pool.execute("INSERT INTO chat_messages (session_id,role,content) VALUES (?,'assistant',?)", [req.params.sessionId, reply]);
     res.json({ ok: true });
@@ -108,7 +108,7 @@ app.post("/message", browserIdentity, async (req, res) => {
   let reply;
   try {
     const chat = await readChat(req.chatEmail, sessionId, true);
-    reply = await app.locals.generateReply(chat.messages);
+    reply = await app.locals.generateReply(chat.messages, { account: req.chatAccount });
     if (!reply) throw new Error("Empty database answer");
   } catch (error) {
     console.error("Answer lookup failed:", error.code || "DATABASE_ERROR");

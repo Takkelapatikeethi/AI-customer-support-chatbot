@@ -1,5 +1,7 @@
 # Database-only chatbot answers
 
+**Historical MySQL setup:** the runtime answer source has since moved to DynamoDB. See `DYNAMODB_SUPPORT.md` for current configuration. The files and table described below are retained for reference; they are not used for current chat answer lookup.
+
 The backend now returns approved answers from `chatbot_db.faq_answers`; it makes no OpenAI calls, including when retrying a reply. Login and guest access are unchanged. Only add answers suitable for all chatbot users, including guests.
 
 Apply the additive migration from `server`:
