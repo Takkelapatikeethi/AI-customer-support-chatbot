@@ -1,6 +1,8 @@
 const assert = require('node:assert/strict');
 const { test, after } = require('node:test');
-const records = require('../../Database/seeds/company_support_faq.synthetic.json');
+const original = require('../../Database/seeds/company_support_faq.synthetic.json');
+const additional = require('../../Database/seeds/company_support_faq.additional.synthetic.json');
+const records = [...original, ...additional];
 const { pool } = require('../database');
 const { NO_ANSWER } = require('../database-answers');
 const { createDynamoReply, loadCompanyAnswers, matchCompanyAnswer, SIGN_IN_REQUIRED } = require('../dynamodb-answers');
@@ -8,7 +10,24 @@ const { createDynamoReply, loadCompanyAnswers, matchCompanyAnswer, SIGN_IN_REQUI
 after(() => pool.end());
 const account = { id: 42 };
 
-test('all 20 questions and 40 alternative phrases return the exact stored answers', () => {
+test('dataset contains 20 original and 30 additional unique fictional employee records', () => {
+  assert.equal(original.length, 20);
+  assert.equal(additional.length, 30);
+  assert.equal(new Set(records.map(record => record.id)).size, 50);
+  const phrases = [];
+  for (const record of records) {
+    assert.equal(record.isSynthetic, true);
+    assert.equal(record.isActive, true);
+    assert.equal(record.accessLevel, 'employee');
+    assert.equal(record.sourceUrl, null);
+    assert.equal(record.alternativePhrases.length, 2);
+    assert.ok(record.keywords.length >= 4);
+    phrases.push(record.question, ...record.alternativePhrases);
+  }
+  const { normalize } = require('../database-answers');
+  assert.equal(new Set(phrases.map(normalize)).size, 150);
+});
+test('all 50 questions and 100 alternative phrases return the exact stored answers', () => {
   for (const record of records) {
     for (const question of [record.question, ...record.alternativePhrases]) {
       assert.equal(matchCompanyAnswer(question, records), record.answer, question);

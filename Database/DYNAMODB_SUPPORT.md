@@ -45,8 +45,10 @@ npm run test:dynamodb-live
 npm start
 ```
 
-Unit tests use local fictional fixtures and mocked AWS calls. The HTTP integration test uses isolated temporary MySQL accounts and cleans them up, while mocking DynamoDB. The check command performs real read-only SDK calls and checks the expected initial 20 active employee records. Existing auth/history scripts remain available. The seed data is fictional, not company-approved real policy.
+Unit tests use local fictional fixtures and mocked AWS calls. The HTTP integration test uses isolated temporary MySQL accounts and cleans them up, while mocking DynamoDB. The check command performs real read-only SDK calls, reports the active employee record count, and verifies representative original answers. Existing auth/history scripts remain available. The seed data is fictional, not company-approved real policy.
 
 The optional `test:dynamodb-live` command runs the HTTP integration checks with real DynamoDB reads (including laptop, password, phishing, vacation, expenses and retry) and temporary MySQL test accounts. AWS reads may incur charges. It does not modify DynamoDB records. The outage case remains simulated. For browser testing, start React with `npm start` in `chat_bot`, then sign up or log in at `http://localhost:3000`. Guest messages receive the sign-in prompt.
+
+Thirty additional fictional FAQ records are prepared separately in `seeds/company_support_faq.additional.synthetic.json`; see `seeds/README.md` for conditional CloudShell import instructions. After import the expected total is 50 if the original 20 are unchanged. Unit matching tests cover the combined local 50-record dataset; the SDK check reports the live count rather than requiring exactly 20. This backend still uses the same bounded scan and matching rules.
 
 The backend returns a generic 503 if AWS credentials expire, permissions fail, or DynamoDB is unavailable. It does not silently fall back to MySQL or an AI provider. Saved user questions remain in history when answer lookup fails.

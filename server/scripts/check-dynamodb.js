@@ -10,8 +10,8 @@ const { pool } = require('../database');
       const answer = matchCompanyAnswer(question, records);
       const record = records.find(item => item.answer === answer);
       console.log(`${question} -> ${record ? `${record.id}: ${record.question}` : 'No match'}`);
+      if (!record) throw Object.assign(new Error(), { code: 'EXPECTED_FAQ_NOT_FOUND' });
     }
-    if (records.length !== 20) throw Object.assign(new Error(), { code: 'UNEXPECTED_FAQ_COUNT' });
   } catch (error) {
     console.error('DynamoDB check failed:', error.code || error.name || 'DYNAMODB_ERROR');
     console.error('If your local session expired, run: aws login --profile company-support-dev --region us-east-1');

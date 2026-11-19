@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./Website.css";
-import './MessageActions.css';
-import './HistoryActions.css';
+import "./styles/Website.css";
+import './styles/MessageActions.css';
+import './styles/HistoryActions.css';
 import VoiceInput from './VoiceInput';
-import './ChatWorkspace.css';
-import './ChatScreen.css';
+import './styles/ChatWorkspace.css';
+import './styles/ChatScreen.css';
 import ReplyActions from './ReplyActions';
 import Account from './Account';
+import SupportWelcome from './SupportWelcome';
+import SupportHome from './SupportHome';
+import './styles/SupportPortal.css';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 function MenuIcon({ name }) {
@@ -79,11 +82,10 @@ function App() {
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
   const [route, setRoute] = useState(() => window.location.hash.slice(1));
-  const [guestAccess, setGuestAccess] = useState(false);
   const [editingMessage, setEditingMessage] = useState(null);
   const [actionNotice, setActionNotice] = useState('');
   const [listening, setListening] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 760);
   const composerRef = useRef(null);
   const editMessage = (msg, index) => {
     setEditingMessage({ index, draft: message, file: uploadedFile });
@@ -154,6 +156,7 @@ function App() {
         const { user: currentUser } = await identity.json();
         if (cancelled) return;
         setUser(currentUser);
+        if (!currentUser) return;
         if (!token) throw new Error("Enable browser storage to save and reopen chats.");
         const data = await chatRequest("/api/chats", token);
         if (cancelled) return;
@@ -346,7 +349,7 @@ function App() {
   );
 
   return (
-    <div className={`website chat-screen ${sidebarOpen ? 'sidebar-open' : ''} ${user || guestAccess ? 'chat-entered' : 'chat-welcome'}`}>
+    <div className={`website chat-screen ${sidebarOpen ? 'sidebar-open' : ''} ${user ? 'chat-entered' : 'chat-welcome'}`}>
       <a className="skip-link" href="#assistant">Skip to assistant</a>
       <header className="site-nav">
         <a className="site-mark" href="#home" aria-label="Home"><span className="mark-icon">✳</span> AI Assistant</a>
@@ -361,7 +364,7 @@ function App() {
           <h1>Good questions.<br />Better <em>possibilities.</em></h1>
           <p className="hero-description">A space to explore ideas, make sense of information, and find your way forward. Start a conversation with your AI assistant.</p>
           <a className="primary-link" href="#assistant">Ask your first question <span aria-hidden="true">↗</span></a>
-          <p className="hero-note">Try as a guest · Sign in to access chats across devices</p>
+          <p className="hero-note">Sign in to access chats across devices</p>
         </div>
         <div className="hero-art" aria-label="Illustration of a conversation with an AI assistant" role="img">
           <div className="orbit orbit-one" /><div className="orbit orbit-two" />
@@ -382,12 +385,13 @@ function App() {
       </section>
       <section className="assistant-section" id="assistant" aria-labelledby="assistant-heading">
       <div className="page-width assistant-intro"><div><p className="eyebrow">LET’S START WITH YOU</p><h2 id="assistant-heading">What’s on your mind?</h2></div><p>Ask naturally. Follow your curiosity.<br />Your next idea could start right here.</p></div>
-      {!user && !guestAccess && <div className="page-width"><Account api={API_BASE} user={user} busy={historyLoading} placement="chat" onGuest={() => { setGuestAccess(true); setActiveTab('chat'); }} /></div>}
-    {(user || guestAccess) && <><div className="page-width chat-access-status"><span>{user ? `Signed in as ${user.username}` : 'You are chatting as a guest'}</span>{!user && <button type="button" disabled={isTyping || historyLoading} onClick={() => setGuestAccess(false)}>Back to chat options</button>}</div>
+      {!user && <SupportHome api={API_BASE} busy={historyLoading} />}
+    {user && <><div className="page-width chat-access-status"><span>{`Signed in as ${user.username}`}</span></div>
     <div className="assistant-workspace" style={styles.container}>
       <div className="chat-layout unified-chat">
       <aside className="chat-history" aria-label="Chat history">
-        <div className="sidebar-brand"><strong>AI Assistant</strong><button type="button" aria-label="Close sidebar" onClick={() => setSidebarOpen(false)}>×</button></div>
+        <div className="sidebar-brand"><strong><span className="support-brand-mark" aria-hidden="true">N</span> Support Desk</strong><button type="button" aria-label="Close sidebar" onClick={() => setSidebarOpen(false)}>×</button></div>
+        <div className="support-sidebar-label">A little help. A better workday.</div>
         <h2>Chat history</h2>
         <button className="new-chat" type="button" onClick={clearChat} disabled={isTyping || historyLoading}>+ New chat</button>
         <p className="history-note">{user ? `Saved to ${user.username}'s account` : 'Saved for this browser'}</p>
@@ -410,15 +414,16 @@ function App() {
             </div></details></div>
           ))}
         </div>
-        <div className="sidebar-account"><Account api={API_BASE} user={user} busy={isTyping || historyLoading} /><small>{user ? 'Your personal workspace' : 'Guest workspace'}</small></div>
+        <div className="sidebar-account"><Account api={API_BASE} user={user} busy={isTyping || historyLoading} /><small>Your personal workspace</small></div>
       </aside>
       <div style={styles.chatBox} className="conversation-panel">
         <div style={styles.header} className="conversation-header">
           <button className="sidebar-toggle" type="button" aria-label="Toggle chat history" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((open) => !open)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
           <div>
-            <div style={styles.headerTitle}>AI Assistant</div>
-            <div style={styles.headerSubtitle}>Your everyday thinking partner</div>
+            <div style={styles.headerTitle}>Your support workspace</div>
+            <div style={styles.headerSubtitle}>Company answers, one conversation away.</div>
           </div>
+          <span className="support-demo-badge">Fictional company demo</span>
 
           <button style={styles.clearButton} onClick={clearChat} type="button" disabled={isTyping || historyLoading}>
             New chat
@@ -450,7 +455,7 @@ function App() {
         {activeTab === "chat" && (
           <>
             <div style={styles.messages} className={`conversation-messages ${!sessionId && messages.length === 1 ? 'empty-conversation' : ''}`} role="log" aria-label="Conversation" aria-live="polite">
-              {!sessionId && messages.length === 1 && <div className="chat-empty-heading"><span className="empty-spark" aria-hidden="true">✦</span><h1>What can I help with?</h1><p>Ask a question, explore an idea, or upload a file.</p></div>}
+              {!sessionId && messages.length === 1 && <SupportWelcome name={user.username} disabled={isTyping || historyLoading || listening || editingMessage !== null} onChoose={(question) => { setMessage(question); setActionNotice(''); composerRef.current?.focus(); }} />}
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -591,7 +596,7 @@ function App() {
                     handleSend();
                   }
                 }}
-                placeholder="Type a message..."
+                placeholder="Ask about IT, leave, expenses, and more…"
                 aria-label="Message"
                 disabled={isTyping || historyLoading || !token}
                 rows={1}
@@ -609,6 +614,7 @@ function App() {
                 <MenuIcon name="send" />
               </button>
             </div>
+            <p className="support-composer-note">Fictional demo answers · Files are saved with your chat, not analyzed. Avoid sensitive information.</p>
           </>
         )}
 
@@ -618,8 +624,7 @@ function App() {
             <div style={styles.infoCard}>
               <strong>What can this assistant do?</strong>
               <p style={styles.infoText}>
-                It can answer questions, explain services, and help with basic
-                support requests.
+                Find saved answers to company-support questions about IT, HR, security, finance, application access, and workplace services. The NovaTech policies in this demo are fictional.
               </p>
             </div>
             <div style={styles.infoCard}>
@@ -642,7 +647,7 @@ function App() {
             <h3 style={styles.panelTitle}>Contact Support</h3>
             <div style={styles.infoCard}>
               <strong>Have a question?</strong>
-              <p style={styles.infoText}>Use the Chat tab to talk with the AI assistant. Human support contact details have not been provided.</p>
+              <p style={styles.infoText}>Use the Chat tab to search saved support answers. This is a fictional company demonstration; human support contact details have not been provided.</p>
             </div>
             <div style={styles.infoCard}>
               <strong>Need help now?</strong>
@@ -654,10 +659,10 @@ function App() {
         )}
       </div>
       </div>
-      </div><p className="assistant-disclosure">Signed-in chats are saved to your account. Guest chats belong to this browser; clearing browser storage loses guest access. Avoid sharing sensitive information. Text uploads: TXT, MD, CSV, JSON · up to 150 KB.</p></>}
+      </div><p className="assistant-disclosure">Signed-in chats are saved to your account. Avoid sharing sensitive information. Text uploads: TXT, MD, CSV, JSON · up to 150 KB.</p></>}
       </section>
       <section className="how-section page-width" id="how-it-works"><div><p className="eyebrow">FROM QUESTION TO CLARITY</p><h2>A conversation,<br />at your pace.</h2></div><ol><li><strong>Start with a question.</strong><p>Type what you need help with. There’s no special format.</p></li><li><strong>Add a little context.</strong><p>Ask a follow-up or attach a text file to explore further.</p></li><li><strong>Come back to your ideas.</strong><p>Reopen a saved conversation from this browser’s chat history.</p></li></ol></section>
-      <section className="faq-section page-width" id="questions"><p className="eyebrow">A FEW USEFUL ANSWERS</p><h2>Before you begin.</h2><details><summary>Do I need an account?</summary><p>You can chat as a guest, or create an account to reopen your account chats across devices. Guest chats remain separate. People sharing a browser can see its guest chats.</p></details><details><summary>Can the assistant answer questions about a specific business?</summary><p>This is a general AI assistant. Verified business information has not been added yet, so it cannot confirm company services, prices, policies, or availability.</p></details><details><summary>Are AI answers always accurate?</summary><p>AI can make mistakes. Check important details with a reliable source before acting on an answer.</p></details><details><summary>What happens when I start a new chat?</summary><p>You begin a separate conversation. Your previous chats remain available in this browser’s chat history.</p></details></section>
+      <section className="faq-section page-width" id="questions"><p className="eyebrow">A FEW USEFUL ANSWERS</p><h2>Before you begin.</h2><details><summary>Do I need an account?</summary><p>Yes. Sign up or log in to ask company-support questions and reopen your saved conversations across devices.</p></details><details><summary>Can the assistant answer questions about a specific business?</summary><p>This is a general AI assistant. Verified business information has not been added yet, so it cannot confirm company services, prices, policies, or availability.</p></details><details><summary>Are AI answers always accurate?</summary><p>AI can make mistakes. Check important details with a reliable source before acting on an answer.</p></details><details><summary>What happens when I start a new chat?</summary><p>You begin a separate conversation. Your previous chats remain available in this browser’s chat history.</p></details></section>
       </main>
       <footer className="site-footer page-width"><a className="site-mark" href="#home"><span className="mark-icon">✳</span> AI Assistant</a><p>A little curiosity goes a long way.</p><a href="#home">Back to top ↑</a></footer>
 

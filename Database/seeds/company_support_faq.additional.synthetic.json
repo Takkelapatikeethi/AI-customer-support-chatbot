@@ -1,0 +1,730 @@
+[
+    {
+        "id":  "IT-006",
+        "category":  "IT Support",
+        "question":  "How do I connect to an office printer?",
+        "alternativePhrases":  [
+                                   "I need to add a printer",
+                                   "Where can I find the shared printer"
+                               ],
+        "keywords":  [
+                         "printer",
+                         "printing",
+                         "print",
+                         "office",
+                         "queue"
+                     ],
+        "answer":  "Use the approved printer setup instructions in the NovaTech Employee Portal and select the printer for your office location. If it is missing or shows an error, send the printer name, location, and error text to the NovaTech IT Service Desk. Do not install drivers from unofficial websites. Collect printed documents promptly.",
+        "sourceName":  "Office Printing Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-007",
+        "category":  "IT Support",
+        "question":  "What should I do when my company laptop is running slowly?",
+        "alternativePhrases":  [
+                                   "My laptop has become very slow",
+                                   "My work computer keeps freezing"
+                               ],
+        "keywords":  [
+                         "slow",
+                         "freezing",
+                         "performance",
+                         "laptop",
+                         "computer"
+                     ],
+        "answer":  "Save your work, close unused applications, and restart the device when safe. Check for approved system updates and low-storage warnings. Do not disable security software or install cleanup tools. If the problem continues, submit a NovaTech IT Service Desk ticket with the affected applications, timing, and any error messages.",
+        "sourceName":  "Device Performance Troubleshooting Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-008",
+        "category":  "IT Support",
+        "question":  "How do I request a monitor or keyboard?",
+        "alternativePhrases":  [
+                                   "I need an external display for work",
+                                   "Can I get a replacement keyboard or mouse"
+                               ],
+        "keywords":  [
+                         "monitor",
+                         "display",
+                         "keyboard",
+                         "mouse",
+                         "accessory",
+                         "equipment"
+                     ],
+        "answer":  "Submit an equipment request to the NovaTech IT Service Desk listing the accessory, business need, work location, and any damaged asset details. Your manager confirms the need and IT checks stock and compatibility. Wait for approval before purchasing equipment personally; reimbursement is not automatic.",
+        "sourceName":  "Workstation Accessories Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-009",
+        "category":  "IT Support",
+        "question":  "How do I recover an accidentally deleted work file?",
+        "alternativePhrases":  [
+                                   "I deleted a document by mistake",
+                                   "Can IT restore a missing work file"
+                               ],
+        "keywords":  [
+                         "deleted",
+                         "recover",
+                         "restore",
+                         "file",
+                         "document",
+                         "recycle bin"
+                     ],
+        "answer":  "Check the recycle bin and version history in the approved storage application. If the file is unavailable, contact the NovaTech IT Service Desk promptly with the filename, original location, and approximate deletion time. Recovery depends on available backups and retention settings and is not guaranteed. Do not install recovery software or copy sensitive data to personal storage.",
+        "sourceName":  "Work File Recovery Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-010",
+        "category":  "IT Support",
+        "question":  "How do I get help with a video meeting audio problem?",
+        "alternativePhrases":  [
+                                   "People cannot hear me in a meeting",
+                                   "My meeting microphone is not working"
+                               ],
+        "keywords":  [
+                         "meeting",
+                         "audio",
+                         "microphone",
+                         "headset",
+                         "sound",
+                         "video"
+                     ],
+        "answer":  "Check mute controls, select the intended microphone and speaker in the approved meeting application, and test the headset connection. Review the application\u0027s microphone permission and restart it if safe. If audio still fails, contact the NovaTech IT Service Desk with the application, device type, and test results. Never share meeting recordings containing sensitive information in a general ticket.",
+        "sourceName":  "Online Meeting Troubleshooting Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-011",
+        "category":  "IT Support",
+        "question":  "What should I do when my company mailbox is full?",
+        "alternativePhrases":  [
+                                   "I cannot receive email because storage is full",
+                                   "My email quota has been reached"
+                               ],
+        "keywords":  [
+                         "mailbox",
+                         "email",
+                         "quota",
+                         "storage",
+                         "full",
+                         "archive"
+                     ],
+        "answer":  "Review mailbox storage using the approved email application\u0027s tools. Archive or remove items only in accordance with the records-retention policy; do not delete material subject to a retention notice. Ask the NovaTech IT Service Desk for help if delivery is blocked or more capacity is needed. Do not forward work email to a personal account to free space.",
+        "sourceName":  "Mailbox Storage Management Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "IT-012",
+        "category":  "IT Support",
+        "question":  "How do I get help when a company laptop update fails?",
+        "alternativePhrases":  [
+                                   "My system update keeps failing",
+                                   "My work laptop is stuck installing an update"
+                               ],
+        "keywords":  [
+                         "update",
+                         "upgrade",
+                         "installation",
+                         "stuck",
+                         "patch",
+                         "failed"
+                     ],
+        "answer":  "Keep the device connected to power and follow any on-screen recovery guidance. Do not repeatedly force shutdown during an update or disable the managed update service. Contact the NovaTech IT Service Desk with the update name, error code, and how long the device has been on the same screen. IT will advise whether a restart or recovery action is appropriate.",
+        "sourceName":  "Managed Device Update Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-005",
+        "category":  "Information Security",
+        "question":  "Can I use a personal USB drive on my company computer?",
+        "alternativePhrases":  [
+                                   "May I plug in my own memory stick",
+                                   "Can I copy work files to a flash drive"
+                               ],
+        "keywords":  [
+                         "usb",
+                         "flash drive",
+                         "memory stick",
+                         "removable media",
+                         "personal"
+                     ],
+        "answer":  "Do not connect personal or unknown removable drives to a company device. If removable storage is required for work, request approved encrypted media through the NovaTech IT Service Desk and obtain any required Security approval. Follow the applicable data-handling rules. Report unexpected USB devices or accidental connections through the NovaTech Security Portal.",
+        "sourceName":  "Removable Media Handling Standard",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-006",
+        "category":  "Information Security",
+        "question":  "How do I share confidential files with an external partner?",
+        "alternativePhrases":  [
+                                   "I need to send sensitive documents outside the company",
+                                   "Can I share a confidential file with a vendor"
+                               ],
+        "keywords":  [
+                         "confidential",
+                         "external",
+                         "partner",
+                         "vendor",
+                         "sharing",
+                         "sensitive"
+                     ],
+        "answer":  "Confirm the recipient\u0027s identity and business need, then obtain data-owner approval. Use the approved sharing platform with the narrowest permissions and an appropriate expiry. Check the data classification before sharing; some information cannot leave the company without additional approval. Ask Security through the NovaTech Security Portal when unsure. Do not use public links or personal email.",
+        "sourceName":  "External Information Sharing Standard",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-007",
+        "category":  "Information Security",
+        "question":  "Can I use public Wi-Fi for company work?",
+        "alternativePhrases":  [
+                                   "Is airport internet safe for work",
+                                   "Can I connect my work laptop to cafe Wi-Fi"
+                               ],
+        "keywords":  [
+                         "public wifi",
+                         "airport",
+                         "cafe",
+                         "wireless",
+                         "hotspot",
+                         "travel"
+                     ],
+        "answer":  "Prefer a trusted connection or an approved hotspot. When public Wi-Fi is necessary, verify the network name, avoid automatic reconnection, and use the approved company VPN as required. Never bypass certificate warnings or endpoint controls. Avoid exposing confidential information in public spaces. Report suspicious connection behavior through the NovaTech Security Portal.",
+        "sourceName":  "Public Network Working Guide",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-008",
+        "category":  "Information Security",
+        "question":  "How do I report an email sent to the wrong recipient?",
+        "alternativePhrases":  [
+                                   "I accidentally emailed confidential data to someone else",
+                                   "I sent a work attachment to the wrong person"
+                               ],
+        "keywords":  [
+                         "wrong recipient",
+                         "misdirected email",
+                         "accidental disclosure",
+                         "attachment",
+                         "data exposure"
+                     ],
+        "answer":  "Report the incident immediately through the NovaTech Security Portal, including when it occurred and the type of information involved. Use the approved recall feature if available, but do not assume recall succeeded. Follow Security instructions about contacting recipients. Do not send further copies of the sensitive material in the report or attempt to conceal the mistake.",
+        "sourceName":  "Accidental Data Disclosure Procedure",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-009",
+        "category":  "Information Security",
+        "question":  "Which password manager should I use for work?",
+        "alternativePhrases":  [
+                                   "Where should I store my work passwords",
+                                   "Can I keep passwords in a spreadsheet"
+                               ],
+        "keywords":  [
+                         "password manager",
+                         "vault",
+                         "spreadsheet",
+                         "store passwords",
+                         "secrets"
+                     ],
+        "answer":  "Use only the company-approved password manager identified in the NovaTech Employee Portal. Request installation or access through the NovaTech IT Service Desk. Do not store passwords in spreadsheets, chat messages, or unapproved browser accounts. Use unique passwords and follow MFA requirements. Access to shared credentials requires an approved vault workflow, not direct password sharing.",
+        "sourceName":  "Work Credential Storage Standard",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "SEC-010",
+        "category":  "Information Security",
+        "question":  "What should I do if antivirus reports a threat?",
+        "alternativePhrases":  [
+                                   "My security software detected malware",
+                                   "I see an endpoint protection alert"
+                               ],
+        "keywords":  [
+                         "antivirus",
+                         "malware",
+                         "threat",
+                         "endpoint protection",
+                         "alert",
+                         "quarantine"
+                     ],
+        "answer":  "Stop interacting with the suspicious file and report the alert immediately through the NovaTech Security Portal using a trusted device if necessary. Include the alert text and detection time without opening the file again. Follow Security instructions for network isolation or recovery. Do not disable protection, restore quarantined files, or install another security tool yourself.",
+        "sourceName":  "Endpoint Security Alert Response Guide",
+        "department":  "Security",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-005",
+        "category":  "HR",
+        "question":  "How do I update my home address in employee records?",
+        "alternativePhrases":  [
+                                   "I moved house and need to change my address",
+                                   "Where can I edit my personal contact details"
+                               ],
+        "keywords":  [
+                         "address",
+                         "moved",
+                         "personal details",
+                         "contact information",
+                         "employee records"
+                     ],
+        "answer":  "Open Personal Details in the NovaTech Employee Portal and update the permitted contact fields. Complete any verification requested through the secure HR workflow. Contact HR through the portal if a field is locked. A change of address does not automatically approve a new work location; discuss remote-location implications with your manager and HR.",
+        "sourceName":  "Employee Contact Details Procedure",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-006",
+        "category":  "HR",
+        "question":  "Where can I view my payslips?",
+        "alternativePhrases":  [
+                                   "How do I download a salary statement",
+                                   "Where is my monthly pay slip"
+                               ],
+        "keywords":  [
+                         "payslip",
+                         "pay slip",
+                         "salary statement",
+                         "payroll",
+                         "download"
+                     ],
+        "answer":  "Open Payroll in the NovaTech Employee Portal and select the relevant pay period. Download statements only to a location permitted by the personal-data policy. For missing statements or access problems, submit a confidential payroll request through the portal. Do not include salary information or bank details in a general IT ticket.",
+        "sourceName":  "Payroll Statement Access Guide",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-007",
+        "category":  "HR",
+        "question":  "How do I request an employment verification letter?",
+        "alternativePhrases":  [
+                                   "I need proof that I work here",
+                                   "Can HR provide an employment confirmation letter"
+                               ],
+        "keywords":  [
+                         "employment verification",
+                         "confirmation letter",
+                         "proof of employment",
+                         "hr letter"
+                     ],
+        "answer":  "Submit an HR request through the NovaTech Employee Portal with the purpose, required recipient, requested deadline, and the information that must be confirmed. HR verifies the request and provides the approved form of letter. Do not draft an official company confirmation or promise a turnaround date on HR\u0027s behalf. Use secure channels for personal identifiers.",
+        "sourceName":  "Employment Verification Request Guide",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-008",
+        "category":  "HR",
+        "question":  "How do I update my emergency contact?",
+        "alternativePhrases":  [
+                                   "I need to change my next of kin details",
+                                   "Where do I add an emergency contact person"
+                               ],
+        "keywords":  [
+                         "emergency contact",
+                         "next of kin",
+                         "contact person",
+                         "personal records"
+                     ],
+        "answer":  "Use the Emergency Contacts section of the NovaTech Employee Portal to add or update the person\u0027s name, relationship, and current contact details. Ensure the person knows they are listed. Check the information after saving. If editing is unavailable, contact HR through the secure portal rather than posting the details in chat or a general support ticket.",
+        "sourceName":  "Emergency Contact Maintenance Guide",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-009",
+        "category":  "HR",
+        "question":  "How do I request job-related training?",
+        "alternativePhrases":  [
+                                   "Can I attend a professional course",
+                                   "I want approval for a work certification"
+                               ],
+        "keywords":  [
+                         "training",
+                         "course",
+                         "certification",
+                         "learning",
+                         "professional development"
+                     ],
+        "answer":  "Discuss the skills need with your manager and submit the learning request in the NovaTech Employee Portal with the provider, cost, dates, and business benefit. Wait for budget and attendance approval before registering. Any reimbursement or study-time arrangement must be confirmed in advance under the applicable learning policy. Do not assume passing an exam guarantees repayment.",
+        "sourceName":  "Learning and Development Request Policy",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "HR-010",
+        "category":  "HR",
+        "question":  "How do I raise a workplace conduct concern?",
+        "alternativePhrases":  [
+                                   "I need to report bullying at work",
+                                   "How can I raise a harassment complaint"
+                               ],
+        "keywords":  [
+                         "conduct",
+                         "bullying",
+                         "harassment",
+                         "complaint",
+                         "concern",
+                         "hr"
+                     ],
+        "answer":  "Use the confidential HR reporting option in the NovaTech Employee Portal or contact the designated HR representative in your onboarding materials. You may contact HR directly if discussing the concern with your manager is inappropriate. Provide factual details through the confidential channel, not general chat. HR explains the review process and available support; confidentiality is handled according to the applicable process.",
+        "sourceName":  "Workplace Conduct Reporting Procedure",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "APP-003",
+        "category":  "Application Access",
+        "question":  "What should I do when an application license has expired?",
+        "alternativePhrases":  [
+                                   "My business software subscription expired",
+                                   "The tool says my license is no longer valid"
+                               ],
+        "keywords":  [
+                         "license expired",
+                         "subscription",
+                         "renewal",
+                         "software activation",
+                         "business tool"
+                     ],
+        "answer":  "Open a NovaTech IT Service Desk ticket with the application name, license error, and business impact. IT checks assignment and renewal status with the application owner. Do not buy a personal subscription, use another employee\u0027s license, or enter an unapproved activation key. If work is blocked, ask for an approved temporary alternative through the same ticket.",
+        "sourceName":  "Application License Renewal Guide",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "APP-004",
+        "category":  "Application Access",
+        "question":  "How do I request temporary elevated permissions?",
+        "alternativePhrases":  [
+                                   "I need administrator rights for a work task",
+                                   "Can I get time-limited privileged access"
+                               ],
+        "keywords":  [
+                         "administrator rights",
+                         "privileged access",
+                         "elevated permissions",
+                         "temporary",
+                         "admin"
+                     ],
+        "answer":  "Submit a NovaTech Access Portal request specifying the system, exact task, justification, and required duration. Your manager and system owner must approve it, with Security review where required. IT uses the approved privileged-access process and removes access when the approved period ends. Do not bypass controls or use a colleague\u0027s administrator account.",
+        "sourceName":  "Temporary Privileged Access Standard",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "APP-005",
+        "category":  "Application Access",
+        "question":  "How do I request access to a shared team folder?",
+        "alternativePhrases":  [
+                                   "I cannot open our department shared drive",
+                                   "Please give me permission to a team directory"
+                               ],
+        "keywords":  [
+                         "shared folder",
+                         "team folder",
+                         "directory",
+                         "shared drive",
+                         "file permissions"
+                     ],
+        "answer":  "Request folder access through the NovaTech Access Portal with the folder location, business need, and whether read or edit permissions are required. The folder\u0027s data owner approves access and IT applies the approved permissions. Do not ask colleagues to copy restricted files elsewhere to bypass access controls. Report unexpected existing access to the data owner.",
+        "sourceName":  "Shared Folder Access Procedure",
+        "department":  "IT",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "FIN-003",
+        "category":  "Finance",
+        "question":  "How do I correct an expense claim returned by Finance?",
+        "alternativePhrases":  [
+                                   "My reimbursement claim was sent back",
+                                   "Finance requested changes to my expense report"
+                               ],
+        "keywords":  [
+                         "returned claim",
+                         "expense correction",
+                         "reimbursement",
+                         "resubmit",
+                         "finance review"
+                     ],
+        "answer":  "Open the returned claim in the NovaTech Expense Portal and read the reviewer comments. Correct the identified fields or attach the requested supporting documents, then resubmit through the existing claim. Do not create a duplicate claim for the same expense. Use the portal\u0027s Finance query option if the reason is unclear; approval is still required before payment.",
+        "sourceName":  "Expense Claim Correction Guide",
+        "department":  "Finance",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "FIN-004",
+        "category":  "Finance",
+        "question":  "How do I request approval to purchase equipment for my team?",
+        "alternativePhrases":  [
+                                   "We need a purchase order for office equipment",
+                                   "How do I get a supplier purchase approved"
+                               ],
+        "keywords":  [
+                         "purchase order",
+                         "procurement",
+                         "supplier",
+                         "equipment purchase",
+                         "budget"
+                     ],
+        "answer":  "Obtain your manager\u0027s budget approval and submit a purchasing request through the Finance request section of the NovaTech Employee Portal. Include specifications, business need, cost center, and supplier quotation if available. Finance confirms the approved ordering process. IT equipment also requires IT review. Do not commit company funds or sign supplier terms before authorization.",
+        "sourceName":  "Business Purchasing Approval Procedure",
+        "department":  "Finance",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "FIN-005",
+        "category":  "Finance",
+        "question":  "How do I report a duplicate reimbursement payment?",
+        "alternativePhrases":  [
+                                   "I was paid twice for the same expense",
+                                   "My expense refund appears duplicated"
+                               ],
+        "keywords":  [
+                         "duplicate payment",
+                         "paid twice",
+                         "reimbursement error",
+                         "refund",
+                         "overpayment"
+                     ],
+        "answer":  "Contact Finance through the NovaTech Expense Portal with the claim reference, payment dates, and suspected duplicate amount. Finance will investigate and provide an approved correction process. Do not send funds to bank details received in an unsolicited email or independently offset another claim. Share payment evidence only through the secure Finance channel.",
+        "sourceName":  "Expense Payment Correction Procedure",
+        "department":  "Finance",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "ONB-003",
+        "category":  "Employee Onboarding",
+        "question":  "How do I get an office badge as a new employee?",
+        "alternativePhrases":  [
+                                   "I am a new starter and need a building pass",
+                                   "Where do I collect my employee entry card"
+                               ],
+        "keywords":  [
+                         "office badge",
+                         "building pass",
+                         "entry card",
+                         "new starter",
+                         "reception"
+                     ],
+        "answer":  "Your manager coordinates badge arrangements with Workplace Services before your first office visit. Follow the collection instructions in your onboarding checklist and bring the identification specified there. If arrangements are missing, contact your manager through the NovaTech Employee Portal. Do not enter using another person\u0027s badge or allow someone to bypass reception checks.",
+        "sourceName":  "New Starter Building Access Guide",
+        "department":  "Workplace Services",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "ONB-004",
+        "category":  "Employee Onboarding",
+        "question":  "What should I do if an onboarding task is missing from my checklist?",
+        "alternativePhrases":  [
+                                   "My new starter checklist is incomplete",
+                                   "An induction activity is not listed in the portal"
+                               ],
+        "keywords":  [
+                         "missing task",
+                         "onboarding checklist",
+                         "induction activity",
+                         "new starter",
+                         "incomplete"
+                     ],
+        "answer":  "Compare the checklist in the NovaTech Employee Portal with your manager\u0027s first-week plan. Ask your manager or HR to confirm whether the missing activity applies to your role and location. HR can correct the checklist or assign the task. Do not mark unrelated tasks complete or assume a missing security requirement is waived. Send access issues to the NovaTech IT Service Desk.",
+        "sourceName":  "Onboarding Checklist Correction Guide",
+        "department":  "HR",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "WORK-002",
+        "category":  "Workplace Policy",
+        "question":  "How do I book a meeting room?",
+        "alternativePhrases":  [
+                                   "I need to reserve a conference room",
+                                   "Where can I schedule an office meeting space"
+                               ],
+        "keywords":  [
+                         "meeting room",
+                         "conference room",
+                         "booking",
+                         "reserve",
+                         "office space"
+                     ],
+        "answer":  "Use the approved room-booking option listed in the NovaTech Employee Portal. Select your office, date, time, capacity, and any accessibility or equipment needs. Wait for confirmation and release the room if plans change. Contact Workplace Services for booking conflicts or faults. Follow the visitor process separately if external attendees will enter the building.",
+        "sourceName":  "Meeting Room Booking Guide",
+        "department":  "Workplace Services",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "WORK-003",
+        "category":  "Workplace Policy",
+        "question":  "How do I arrange a visitor to the office?",
+        "alternativePhrases":  [
+                                   "A client is coming to our workplace",
+                                   "How do I register an external office guest"
+                               ],
+        "keywords":  [
+                         "visitor",
+                         "external guest",
+                         "client visit",
+                         "reception",
+                         "office entry"
+                     ],
+        "answer":  "Submit the visitor request through the Workplace Services section of the NovaTech Employee Portal before the visit. Provide only the required attendee and meeting details and wait for confirmation. Meet visitors at reception, follow badge and escort requirements, and keep restricted areas and information protected. Do not share your employee badge or entry credentials.",
+        "sourceName":  "Office Visitor Procedure",
+        "department":  "Workplace Services",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    },
+    {
+        "id":  "WORK-004",
+        "category":  "Workplace Policy",
+        "question":  "How do I report a workplace maintenance problem?",
+        "alternativePhrases":  [
+                                   "The office air conditioning is broken",
+                                   "I need to report damaged office furniture"
+                               ],
+        "keywords":  [
+                         "maintenance",
+                         "facilities",
+                         "air conditioning",
+                         "furniture",
+                         "office fault",
+                         "repair"
+                     ],
+        "answer":  "Submit a Workplace Services request through the NovaTech Employee Portal with the location, fault description, and its effect on work. Avoid using damaged equipment and do not attempt repairs. If there is an immediate danger, follow the local emergency procedure instead of waiting for a ticket response. Workplace Services coordinates assessment and updates the request.",
+        "sourceName":  "Workplace Maintenance Reporting Guide",
+        "department":  "Workplace Services",
+        "sourceUrl":  null,
+        "accessLevel":  "employee",
+        "isActive":  true,
+        "isSynthetic":  true,
+        "companyName":  "NovaTech Solutions"
+    }
+]

@@ -9,7 +9,10 @@ const { initializeHistory } = require('../chat-history');
 const { createDynamoReply, loadCompanyAnswers, SIGN_IN_REQUIRED } = require('../dynamodb-answers');
 const live = process.argv.includes('--live');
 const { NO_ANSWER } = require('../database-answers');
-const records = require('../../Database/seeds/company_support_faq.synthetic.json');
+const records = [
+  ...require('../../Database/seeds/company_support_faq.synthetic.json'),
+  ...require('../../Database/seeds/company_support_faq.additional.synthetic.json'),
+];
 const prefix = `dynamo-test-${randomBytes(8).toString('hex')}`;
 const emails = [`${prefix}@example.com`, `${prefix}-other@example.com`];
 const guest = randomBytes(32).toString('hex');
@@ -83,6 +86,13 @@ let server;
       assert.equal(response.data.reply, record.answer);
     }
     console.log('PASS: password reset, phishing, vacation and expense questions return stored answers');
+    for (const recordId of ['IT-006', 'IT-007', 'HR-006', 'WORK-002']) {
+      const record = records.find(item => item.id === recordId);
+      const response = await request('/message', { sessionId: id, text: record.alternativePhrases[0] }, cookie);
+      assert.equal(response.status, 200);
+      assert.equal(response.data.reply, record.answer);
+    }
+    console.log('PASS: new printer, slow laptop, payslip and meeting-room answers work through /message');
     unavailable = true;
     const failed = await request('/message', { sessionId: id, text: 'VPN problem' }, cookie);
     assert.equal(failed.status, 503);
