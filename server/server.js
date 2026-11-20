@@ -2,11 +2,17 @@ const { pool, checkDatabase } = require("./database");
 
 const express = require("express");
 const cors = require("cors");
-const { createDynamoReply } = require('./dynamodb-answers');
+const path = require('node:path');
+const { getConfig } = require('./production-config');
+const { installSecurity, createChatLimiter } = require('./security');
+const { createMysqlReply } = require('./mysql-answers');
 const { browserIdentity, listChats, readChat, saveQuestion, initializeHistory, installHistoryActions } = require("./chat-history");
 const { installAuth, initializeAuth, origin } = require('./auth');
 
 const app = express();
+const config = getConfig();
+installSecurity(app, config);
+const chatLimiter = createChatLimiter();
 const port = process.env.PORT || 5000;
 app.use(cors({ origin, credentials: true }));
 app.use(express.json({ limit: "2mb" }));
@@ -20,7 +26,8 @@ function getReplyError(error) {
   };
 }
 
-app.get("/", (req, res) => {
+app.get("/", (req, res, next) => {
+  if (config.production) return next();
   res.send("Server is running");
 });
 
@@ -35,8 +42,8 @@ app.get("/health/db", async (req, res) => {
   }
 });
 
-app.locals.generateReply = createDynamoReply;
-app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, async (req, res) => {
+app.locals.generateReply = createMysqlReply;
+app.post('/api/chats/:sessionId/messages/:messageId/retry', browserIdentity, chatLimiter, async (req, res) => {
   if (![req.params.sessionId, req.params.messageId].every((id) => /^[1-9]\d{0,19}$/.test(id))) return res.status(400).json({ reply: 'Invalid reply ID.' });
   try {
     const chat = await readChat(req.chatEmail, req.params.sessionId, true);
@@ -77,7 +84,7 @@ app.get("/api/chats/:sessionId/messages", browserIdentity, async (req, res) => {
   }
 });
 
-app.post("/message", browserIdentity, async (req, res) => {
+app.post("/message", browserIdentity, chatLimiter, async (req, res) => {
   const userMessage = req.body.text;
   const fileContext = req.body.fileContext;
 
@@ -126,10 +133,33 @@ app.post("/message", browserIdentity, async (req, res) => {
   }
 });
 
+app.get('/health/live', (req, res) => res.json({ status: 'ok' }));
+
+if (config.production) {
+  const buildDirectory = path.join(__dirname, '../chat_bot/build');
+  app.use(express.static(buildDirectory, {
+    setHeaders: (res, file) => res.setHeader('Cache-Control', /[/\\]assets[/\\]/.test(file) ? 'public, max-age=31536000, immutable' : 'no-cache'),
+  }));
+  app.get('/', (req, res) => res.sendFile(path.join(buildDirectory, 'index.html')));
+}
+app.use((error, req, res, next) => {
+  if (res.headersSent) return next(error);
+  console.error('Request failed:', error.code || error.type || 'REQUEST_ERROR');
+  const status = error.type === 'entity.too.large' ? 413 : error.status === 400 ? 400 : 500;
+  res.status(status).json({ reply: status === 413 ? 'Request body is too large.' : status === 400 ? 'Invalid request body.' : 'Request could not be completed.' });
+});
+
 async function startServer() {
   await checkDatabase();
-  await initializeAuth();
-  await initializeHistory();
+  if (!config.production) {
+    await initializeAuth();
+    await initializeHistory();
+  } else {
+    // Runtime database users do not need schema-changing permissions.
+    for (const table of ['company_support_faq', 'users', 'account_credentials', 'account_sessions', 'password_resets', 'chat_sessions', 'chat_messages', 'chat_preferences', 'reply_ratings']) {
+      await pool.query(`SELECT 1 FROM ${table} LIMIT 0`);
+    }
+  }
   console.log("Database connected");
   const server = app.listen(port);
   server.once("listening", () => {

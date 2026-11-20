@@ -1,4 +1,3 @@
-const { createHash } = require("node:crypto");
 const { pool } = require("./database");
 const { account, sessionToken } = require('./auth');
 
@@ -13,13 +12,7 @@ async function browserIdentity(req, res, next) {
       return next();
     }
   } catch { return res.status(503).json({ reply: 'Could not verify your account. Please try again.' }); }
-  const token = req.get("X-Chat-Token");
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) {
-    return res.status(401).json({ reply: "Browser identity is missing. Refresh the page." });
-  }
-  req.chatEmail = `guest-${createHash("sha256").update(token).digest("hex")}@chatbot.invalid`;
-  res.set("Cache-Control", "no-store");
-  next();
+  return res.status(401).json({ reply: 'Please sign in to use company support.' });
 }
 
 async function getUser(email, db = pool) {

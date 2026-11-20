@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
@@ -7,13 +8,13 @@ const history = { messages: [
   { role: 'assistant', content: 'Previous answer', created_at: '2026-10-20T12:00:01Z' },
 ] };
 let originalFetch;
-beforeAll(() => { Element.prototype.scrollIntoView = jest.fn(); HTMLDialogElement.prototype.close = jest.fn(); HTMLDialogElement.prototype.showModal = jest.fn(); });
+beforeAll(() => { Element.prototype.scrollIntoView = vi.fn(); HTMLDialogElement.prototype.close = vi.fn(); HTMLDialogElement.prototype.showModal = vi.fn(); });
 beforeEach(() => {
   window.history.replaceState(null, '', '/');
   localStorage.clear();
   localStorage.setItem('chatbot-browser-token', 'a'.repeat(64));
   originalFetch = global.fetch;
-  global.fetch = jest.fn(async (url) => ({ ok: true, json: async () => url.endsWith('/api/auth/me') ? { user: { id: 1, username: 'Member' } } : url.endsWith('/api/chats') ? { sessions: [session] } : history }));
+  global.fetch = vi.fn(async (url) => ({ ok: true, json: async () => url.endsWith('/api/auth/me') ? { user: { id: 1, username: 'Member' } } : url.endsWith('/api/chats') ? { sessions: [session] } : history }));
 });
 afterEach(() => { global.fetch = originalFetch; });
 
@@ -32,7 +33,7 @@ test('opens a previous conversation and starts a new chat without deleting histo
   expect(screen.getByText('Previous question', { selector: 'div' })).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Cancel edit' }));
   expect(input).toHaveValue('Unsent draft');
-  const writeText = jest.fn().mockResolvedValue(undefined);
+  const writeText = vi.fn().mockResolvedValue(undefined);
   Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } });
   fireEvent.click(screen.getByRole('button', { name: 'Copy question 1' }));
   await waitFor(() => expect(writeText).toHaveBeenCalledWith('Previous question'));
@@ -64,7 +65,7 @@ test('shows a history load error and lets the user send a message', async () => 
 
 test('sending a new message saves and selects the returned conversation', async () => {
   let sent = false;
-  global.fetch = jest.fn(async (url, options) => {
+  global.fetch = vi.fn(async (url, options) => {
     if (url.endsWith('/api/auth/me')) return { ok: true, json: async () => ({ user: { id: 1, username: 'Member' } }) };
     if (url.endsWith('/message')) {
       sent = true;
@@ -135,4 +136,20 @@ test('support topics personalize the welcome page and stage a suggested question
   const wasExpanded = toggle.getAttribute('aria-expanded');
   fireEvent.click(toggle);
   expect(toggle.getAttribute('aria-expanded')).not.toBe(wasExpanded);
+});
+
+test('password recovery link is hidden when email delivery is unavailable', async () => {
+  window.history.replaceState(null, '', '/#login');
+  global.fetch.mockImplementation(async () => ({ ok: true, json: async () => ({ user: null, passwordResetEnabled: false }) }));
+  render(<App />);
+  expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
+  await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+  expect(screen.queryByRole('button', { name: 'Forgot password?' })).not.toBeInTheDocument();
+});
+
+test('password recovery link is shown when the backend reports configured email delivery', async () => {
+  window.history.replaceState(null, '', '/#login');
+  global.fetch.mockImplementation(async () => ({ ok: true, json: async () => ({ user: null, passwordResetEnabled: true }) }));
+  render(<App />);
+  expect(await screen.findByRole('button', { name: 'Forgot password?' })).toBeInTheDocument();
 });

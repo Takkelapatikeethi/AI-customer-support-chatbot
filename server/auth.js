@@ -4,8 +4,8 @@ const { pool } = require('./database');
 const scrypt = promisify(derive);
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 const cookieName = 'chatbot_session';
-const production = process.env.NODE_ENV === 'production';
-const origin = process.env.APP_ORIGIN || 'http://localhost:3000';
+const config = require('./production-config').getConfig();
+const { production, origin } = config;
 const attempts = new Map();
 function limit(req, res, next) {
   const now = Date.now();
@@ -59,7 +59,7 @@ function installAuth(app) {
     try { await fn(req, res); }
     catch (error) { console.error('Account request failed:', error.code || 'AUTH_ERROR'); res.status(503).json({ reply: 'Account service unavailable. Please try again.' }); }
   };
-  app.get('/api/auth/me', route(async (req, res) => res.json({ user: await account(req) })));
+  app.get('/api/auth/me', route(async (req, res) => res.json({ user: await account(req), passwordResetEnabled: config.resetEnabled && Boolean(process.env.RESEND_API_KEY && process.env.AUTH_EMAIL_FROM) })));
   app.post('/api/auth/signup', limit, route(async (req, res) => {
     const email = emailOf(req.body.email);
     const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
@@ -99,6 +99,7 @@ function installAuth(app) {
     res.json({ ok: true });
   }));
   app.post('/api/auth/forgot', limit, route(async (req, res) => {
+    if (!config.resetEnabled) return res.status(503).json({ reply: 'Password reset is disabled. Contact the website administrator.' });
     if (!app.locals.sendResetEmail && (!process.env.RESEND_API_KEY || !process.env.AUTH_EMAIL_FROM)) return res.status(503).json({ reply: 'Password reset email is not configured yet. Contact the website administrator.' });
     const [rows] = await pool.execute('SELECT u.id,u.email FROM users u JOIN account_credentials c ON c.user_id=u.id WHERE u.email=?', [emailOf(req.body.email)]);
     if (rows.length) {

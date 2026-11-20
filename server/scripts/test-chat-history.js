@@ -1,14 +1,17 @@
-// Uses a unique test browser and removes only its records after the test.
+// Uses isolated test accounts and removes only their records after the test.
 const assert = require("node:assert/strict");
-const { randomBytes, createHash } = require("node:crypto");
+const { randomBytes } = require("node:crypto");
 const { once } = require("node:events");
 const { app } = require("../server");
 const { pool } = require("../database");
 const { initializeHistory } = require('../chat-history');
+const { initializeAuth } = require('../auth');
+const cookies = new Map();
 
 const token = randomBytes(32).toString("hex");
 const otherToken = randomBytes(32).toString("hex");
-const email = `guest-${createHash("sha256").update(token).digest("hex")}@chatbot.invalid`;
+const email = `history-test-${randomBytes(8).toString("hex")}@example.com`;
+const otherEmail = `other-${email}`;
 let server;
 let base;
 let captured;
@@ -17,23 +20,29 @@ const pass = (name) => { checks++; console.log(`PASS: ${name}`); };
 async function request(route, body, identity = token, method) {
   const response = await fetch(base + route, {
     method: method || (body ? "POST" : "GET"),
-    headers: { "Content-Type": "application/json", ...(identity ? { "X-Chat-Token": identity } : {}) },
+    headers: { "Content-Type": "application/json", ...(cookies.has(identity) ? { Cookie: cookies.get(identity) } : {}) },
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
-  return { status: response.status, data: await response.json() };
+  return { status: response.status, data: await response.json(), cookie: response.headers.get("set-cookie")?.split(";")[0] };
 }
 
 (async () => {
   try {
+    await initializeAuth();
     await initializeHistory();
     app.locals.generateReply = async (history) => { captured = history; return "Test answer"; };
     server = app.listen(0, "127.0.0.1");
     await once(server, "listening");
     base = `http://127.0.0.1:${server.address().port}`;
+    for (const [identity, address] of [[token, email], [otherToken, otherEmail]]) {
+      const signedUp = await request('/api/auth/signup', { name: 'History Test', email: address, password: 'history-test-password-123' }, null);
+      assert.equal(signedUp.status, 201);
+      cookies.set(identity, signedUp.cookie);
+    }
     assert.equal((await request("/api/chats", null, null)).status, 401);
-    pass("History requires browser identity");
+    pass("History requires authenticated account");
     assert.deepEqual((await request("/api/chats")).data.sessions, []);
-    pass("New browser has empty history");
+    pass("New account has empty history");
     const first = await request("/message", { text: "History test question", fileContext: { name: "test.txt", content: "Saved context" } });
     assert.equal(first.status, 200);
     assert.equal(first.data.reply, "Test answer");
@@ -121,8 +130,8 @@ async function request(route, body, identity = token, method) {
   } finally {
     if (server) await new Promise((resolve) => server.close(resolve));
     try {
-      await pool.execute("DELETE FROM users WHERE email=?", [email]);
-      console.log("Removed test browser and its conversations.");
+      await pool.execute("DELETE FROM users WHERE email IN (?,?)", [email, otherEmail]);
+      console.log("Removed test accounts and their conversations.");
     } finally { await pool.end(); }
   }
 })();

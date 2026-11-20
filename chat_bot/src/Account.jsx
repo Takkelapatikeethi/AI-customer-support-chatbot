@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './styles/Account.css';
-export default function Account({ api, user, busy, placement = 'nav', initialMode }) {
+export default function Account({ api, user, busy, placement = 'nav', initialMode, passwordResetEnabled = false }) {
   const page = placement === 'page';
   const reset = page ? window.location.hash.match(/^#reset=([a-f0-9]{64})$/)?.[1] : null;
   const [mode, setMode] = useState(initialMode || (reset ? 'reset' : null));
@@ -39,6 +39,7 @@ export default function Account({ api, user, busy, placement = 'nav', initialMod
     catch (err) { setError(err.message); setPending(false); }
   };
   const FormContainer = page ? 'section' : 'dialog';
+  if (page && mode === 'forgot' && !passwordResetEnabled) return <section className="account-dialog"><h2>Password reset unavailable</h2><p>Email password recovery is not configured. Contact the website administrator for help.</p><button type="button" onClick={() => switchMode('login')}>Back to login</button></section>;
   return <div className={placement === 'chat' ? 'chat-account-panel' : undefined}>
     {placement === 'chat' && <div className="chat-account-intro"><strong>{user ? `Welcome, ${user.username}` : 'Sign in to start chatting'}</strong><p>{user ? 'Your conversations are saved to your account.' : 'Sign up or log in to access company support and save your chats across devices.'}</p></div>}
     <div className="account-controls">
@@ -58,7 +59,7 @@ export default function Account({ api, user, busy, placement = 'nav', initialMod
         {notice && <p role="status">{notice}</p>}
         <button type="submit" disabled={pending}>{pending ? 'Please wait…' : mode === 'signup' ? 'Create account' : mode === 'forgot' ? 'Send reset link' : mode === 'reset' ? 'Update password' : 'Log in'}</button>
       </form>
-      <div className="account-links">{mode === 'login' ? <><button disabled={pending} onClick={() => switchMode('forgot')}>Forgot password?</button><button disabled={pending} onClick={() => switchMode('signup')}>Create an account</button></> : <button disabled={pending} onClick={() => switchMode('login')}>Back to login</button>}</div>
+      <div className="account-links">{mode === 'login' ? <>{passwordResetEnabled && <button disabled={pending} onClick={() => switchMode('forgot')}>Forgot password?</button>}<button disabled={pending} onClick={() => switchMode('signup')}>Create an account</button></> : <button disabled={pending} onClick={() => switchMode('login')}>Back to login</button>}</div>
       {page && <button type="button" disabled={pending} onClick={() => { window.location.hash = 'assistant'; }}>Back to chat options</button>}
     </FormContainer>
     </div>

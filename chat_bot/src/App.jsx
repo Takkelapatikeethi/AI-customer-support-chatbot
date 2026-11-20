@@ -11,7 +11,7 @@ import SupportWelcome from './SupportWelcome';
 import SupportHome from './SupportHome';
 import './styles/SupportPortal.css';
 
-const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : '');
 function MenuIcon({ name }) {
   const paths = {
     rename: 'm15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15z',
@@ -81,6 +81,7 @@ function App() {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
+  const [passwordResetEnabled, setPasswordResetEnabled] = useState(false);
   const [route, setRoute] = useState(() => window.location.hash.slice(1));
   const [editingMessage, setEditingMessage] = useState(null);
   const [actionNotice, setActionNotice] = useState('');
@@ -153,9 +154,10 @@ function App() {
       try {
         const identity = await fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' });
         if (!identity.ok) throw new Error('Could not check your login. Please refresh the page.');
-        const { user: currentUser } = await identity.json();
+        const { user: currentUser, passwordResetEnabled: resetEnabled } = await identity.json();
         if (cancelled) return;
         setUser(currentUser);
+        setPasswordResetEnabled(resetEnabled === true);
         if (!currentUser) return;
         if (!token) throw new Error("Enable browser storage to save and reopen chats.");
         const data = await chatRequest("/api/chats", token);
@@ -344,7 +346,7 @@ function App() {
   if (accountPage) return (
     <main className="account-page">
       <a className="site-mark" href="#home">AI Assistant</a>
-      <Account key={route} api={API_BASE} user={user} busy={false} placement="page" initialMode={route.startsWith('reset=') ? 'reset' : route} />
+      <Account key={route} api={API_BASE} user={user} busy={historyLoading} placement="page" initialMode={route.startsWith('reset=') ? 'reset' : route} passwordResetEnabled={passwordResetEnabled} />
     </main>
   );
 
