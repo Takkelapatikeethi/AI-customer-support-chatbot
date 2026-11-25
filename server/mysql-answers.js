@@ -1,5 +1,5 @@
 const { pool } = require('./database');
-const { NO_ANSWER } = require('./database-answers');
+const { NO_ANSWER } = require('./faq-text');
 const { matchCompanyAnswer } = require('./faq-matching');
 const SIGN_IN_REQUIRED = 'Please sign in to access company-support answers.';
 async function loadCompanyAnswers(db = pool) {

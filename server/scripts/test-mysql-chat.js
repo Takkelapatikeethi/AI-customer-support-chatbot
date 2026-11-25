@@ -8,7 +8,7 @@ const { initializeAuth } = require('../auth');
 const { initializeHistory } = require('../chat-history');
 const { createMysqlReply, loadCompanyAnswers, SIGN_IN_REQUIRED } = require('../mysql-answers');
 const live = process.argv.includes('--live');
-const { NO_ANSWER } = require('../database-answers');
+const { NO_ANSWER } = require('../faq-text');
 const records = [
   ...require('../../Database/seeds/company_support_faq.synthetic.json'),
   ...require('../../Database/seeds/company_support_faq.additional.synthetic.json'),

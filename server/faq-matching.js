@@ -1,4 +1,4 @@
-const { normalize, terms, NO_ANSWER } = require('./database-answers');
+const { normalize, terms, NO_ANSWER } = require('./faq-text');
 function authorized(record) {
   return record.isActive === true && record.accessLevel === 'employee' &&
     typeof record.id === 'string' && typeof record.question === 'string' &&

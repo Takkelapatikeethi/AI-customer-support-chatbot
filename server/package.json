@@ -6,12 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "check:db": "node scripts/check-db.js",
-    "check:dynamodb": "node scripts/check-dynamodb.js",
-    "test:dynamodb": "node --test scripts/test-dynamodb-answers.js",
-    "test:dynamodb-chat": "node scripts/test-dynamodb-chat.js",
-    "test:dynamodb-live": "node scripts/test-dynamodb-chat.js --live",
     "test:history": "node scripts/test-chat-history.js",
-    "test": "node --test scripts/test-dynamodb-answers.js scripts/test-production-config.js scripts/test-mysql-answers.js",
+    "test": "node --test scripts/test-faq-matching.js scripts/test-production-config.js scripts/test-mysql-answers.js",
     "test:auth": "node scripts/test-auth.js",
     "import:faq": "node scripts/import-mysql-faq.js",
     "test:mysql-chat": "node scripts/test-mysql-chat.js --live"
@@ -20,8 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1173.0",
-    "@aws-sdk/lib-dynamodb": "^3.1173.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",

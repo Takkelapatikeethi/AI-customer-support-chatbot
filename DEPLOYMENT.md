@@ -55,4 +55,4 @@ No AWS network rules, IAM policies, billing budgets, DNS, certificates, email do
 
 ## Automated checks
 
-CI runs frontend tests/build and backend unit/security tests without AWS credentials or database access. `npm run test:auth`, `npm run test:history`, and `npm run test:mysql-chat` use isolated temporary MySQL accounts; the last mocks AWS. The MySQL chat integration reads the imported FAQ table and simulates an outage. Integration scripts are opt-in, not run against a production database by CI.
+CI runs frontend tests/build and backend unit/security tests without database access. `npm run test:auth`, `npm run test:history`, and `npm run test:mysql-chat` use isolated temporary MySQL accounts; the last reads the MySQL FAQ table. The MySQL chat integration reads the imported FAQ table and simulates an outage. Integration scripts are opt-in, not run against a production database by CI.
